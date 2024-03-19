@@ -1,7 +1,7 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
-mod core;
+mod validator;
 
 use clap::Parser;
 use human_panic::setup_panic;
@@ -10,15 +10,20 @@ use human_panic::setup_panic;
 #[command(version, about, long_about = None)]
 struct ProgramArguments {
     #[arg(short, long)]
-    name: String,
+    path: String,
 }
 
 fn main() {
     setup_panic!();
 
     let arguments = ProgramArguments::parse();
-    let greet = core::greet(&arguments.name).unwrap();
-    println!("{}", greet);
+    let validations = validator::validate(
+        &arguments.path,
+        validator::local_projects::locate,
+        validator::gradle_releases::fetch,
+    )
+    .unwrap();
+    println!("{:?}", validations);
 }
 
 #[cfg(test)]
@@ -27,15 +32,6 @@ mod tests {
     use predicates::str::contains;
 
     static TOOL: &str = "gwv";
-
-    #[test]
-    fn should_parse_arguments() {
-        let mut cmd = Command::cargo_bin(TOOL).unwrap();
-        let assert = cmd.args(["--name", "John"]).assert();
-
-        let expected = "Hello, John!\n";
-        assert.stdout(expected);
-    }
 
     #[test]
     fn should_show_help() {
