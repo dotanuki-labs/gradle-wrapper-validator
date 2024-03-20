@@ -43,43 +43,23 @@ fn validate(
 #[cfg(test)]
 mod tests {
     use crate::validator::gradle_releases::fetch;
-    use crate::validator::models::{DistributionType, LocalGradleProject, Result};
+    use crate::validator::local_projects::fakes::{locate_tampered_project, locate_valid_project};
     use crate::validator::validate;
 
     static FAKE_PATH_NAME: &str = "/usr/dev/my-projects";
 
-    fn locate_tampered_project(path_name: &str) -> Result<Vec<LocalGradleProject>> {
-        let tampered_project = LocalGradleProject::new(
-            "8.5",
-            DistributionType::Stable,
-            "84900f11f4a86050a8f83342ade7b6bc9b0d2bdd-tampered",
-            path_name,
-        );
-
-        Ok(vec![tampered_project])
-    }
-
-    fn locate_valid_project(path_name: &str) -> anyhow::Result<Vec<LocalGradleProject>> {
-        let valid_project = LocalGradleProject::new(
-            "8.5",
-            DistributionType::Stable,
-            "d3b261c2820e9e3d8d639ed084900f11f4a86050a8f83342ade7b6bc9b0d2bdd",
-            path_name,
-        );
-
-        Ok(vec![valid_project])
-    }
-
     #[test]
     fn should_validate_local_project_when_checksum_matches() {
-        let validations = validate(FAKE_PATH_NAME, locate_valid_project, fetch).unwrap();
+        let fake_locator = locate_valid_project;
+        let validations = validate(FAKE_PATH_NAME, fake_locator, fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(actual.has_valid_wrapper_checksum)
     }
 
     #[test]
     fn should_validate_local_project_when_checksum_does_not_match() {
-        let validations = validate(FAKE_PATH_NAME, locate_tampered_project, fetch).unwrap();
+        let fake_locator = locate_tampered_project;
+        let validations = validate(FAKE_PATH_NAME, fake_locator, fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(!actual.has_valid_wrapper_checksum)
     }

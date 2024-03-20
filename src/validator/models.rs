@@ -1,6 +1,8 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
+use serde::Deserialize;
+
 pub type Result<T> = anyhow::Result<T>;
 
 #[allow(dead_code)]
@@ -36,21 +38,12 @@ impl LocalGradleProject {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct GradleRelease {
+    #[serde(rename(deserialize = "version"))]
     gradle_version: String,
-    distribution_type: DistributionType,
+    #[serde(rename(deserialize = "checksum"))]
     wrapper_checksum: String,
-}
-
-impl GradleRelease {
-    pub fn new(gradle_version: &str, distribution_type: DistributionType, wrapper_checksum: &str) -> Self {
-        Self {
-            gradle_version: String::from(gradle_version),
-            distribution_type,
-            wrapper_checksum: String::from(wrapper_checksum),
-        }
-    }
 }
 
 impl From<&LocalGradleProject> for GradleRelease {
@@ -58,7 +51,6 @@ impl From<&LocalGradleProject> for GradleRelease {
         let cloned = project.clone();
         GradleRelease {
             gradle_version: cloned.gradle_version,
-            distribution_type: cloned.distribution_type,
             wrapper_checksum: cloned.wrapper_checksum,
         }
     }
