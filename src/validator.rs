@@ -1,14 +1,15 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
-pub(crate) mod gradle_releases;
-pub(crate) mod local_projects;
+mod gradle_releases;
+mod local_projects;
 mod models;
 
-use crate::validator::models::{GradleRelease, LocalGradleProject};
+use crate::validator::models::{GradleRelease, LocalGradleProject, Result};
 
-pub(crate) use gradle_releases::fetch;
-pub(crate) use local_projects::locate;
+pub fn locate_and_validate(path_name: &str) -> Result<Vec<ValidationOutcome>> {
+    validate(path_name, local_projects::locate, gradle_releases::fetch)
+}
 
 #[derive(Debug, PartialEq)]
 pub struct ValidationOutcome {
@@ -16,27 +17,18 @@ pub struct ValidationOutcome {
     has_valid_wrapper_checksum: bool,
 }
 
-impl ValidationOutcome {
-    pub fn new(local_project: LocalGradleProject, has_valid_wrapper_checksum: bool) -> Self {
-        Self {
-            local_project,
-            has_valid_wrapper_checksum,
-        }
-    }
-}
-
-pub fn validate(
+fn validate(
     base_path: &str,
-    locate_gradle_projects: fn(&str) -> anyhow::Result<Vec<LocalGradleProject>>,
-    fetch_gradle_releases: fn() -> anyhow::Result<Vec<GradleRelease>>,
-) -> anyhow::Result<Vec<ValidationOutcome>> {
+    locate_gradle_projects: fn(&str) -> Result<Vec<LocalGradleProject>>,
+    fetch_gradle_releases: fn() -> Result<Vec<GradleRelease>>,
+) -> Result<Vec<ValidationOutcome>> {
     let gradle_releases = fetch_gradle_releases()?;
-    let local_projects = locate_gradle_projects(&base_path)?;
+    let local_projects = locate_gradle_projects(base_path)?;
 
     let mut validations: Vec<ValidationOutcome> = Vec::new();
 
     for project in local_projects {
-        let expected_release = GradleRelease::from(project.clone());
+        let expected_release = GradleRelease::from(&project);
         let validation = gradle_releases.contains(&expected_release);
 
         validations.push(ValidationOutcome {
@@ -51,12 +43,12 @@ pub fn validate(
 #[cfg(test)]
 mod tests {
     use crate::validator::gradle_releases::fetch;
-    use crate::validator::models::{DistributionType, LocalGradleProject};
+    use crate::validator::models::{DistributionType, LocalGradleProject, Result};
     use crate::validator::validate;
 
     static FAKE_PATH_NAME: &str = "/usr/dev/my-projects";
 
-    fn locate_tampered_project(path_name: &str) -> anyhow::Result<Vec<LocalGradleProject>> {
+    fn locate_tampered_project(path_name: &str) -> Result<Vec<LocalGradleProject>> {
         let tampered_project = LocalGradleProject::new(
             "8.5",
             DistributionType::Stable,
@@ -81,14 +73,14 @@ mod tests {
     #[test]
     fn should_validate_local_project_when_checksum_matches() {
         let validations = validate(FAKE_PATH_NAME, locate_valid_project, fetch).unwrap();
-        let actual = validations.get(0).unwrap();
-        assert_eq!(actual.has_valid_wrapper_checksum, true)
+        let actual = validations.first().unwrap();
+        assert!(actual.has_valid_wrapper_checksum)
     }
 
     #[test]
     fn should_validate_local_project_when_checksum_does_not_match() {
         let validations = validate(FAKE_PATH_NAME, locate_tampered_project, fetch).unwrap();
-        let actual = validations.get(0).unwrap();
-        assert_eq!(actual.has_valid_wrapper_checksum, false)
+        let actual = validations.first().unwrap();
+        assert!(!actual.has_valid_wrapper_checksum)
     }
 }

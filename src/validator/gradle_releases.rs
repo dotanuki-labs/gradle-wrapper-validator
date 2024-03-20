@@ -1,9 +1,9 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
-use crate::validator::models::{DistributionType, GradleRelease};
+use crate::validator::models::{DistributionType, GradleRelease, Result};
 
-pub(crate) fn fetch() -> anyhow::Result<Vec<GradleRelease>> {
+pub fn fetch() -> Result<Vec<GradleRelease>> {
     let gradle_84 = GradleRelease::new(
         "8.4",
         DistributionType::Stable,
