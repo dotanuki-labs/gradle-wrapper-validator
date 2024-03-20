@@ -1,6 +1,9 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
+pub type Result<T> = anyhow::Result<T>;
+
+#[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum DistributionType {
     Stable,
@@ -50,12 +53,13 @@ impl GradleRelease {
     }
 }
 
-impl From<LocalGradleProject> for GradleRelease {
-    fn from(project: LocalGradleProject) -> Self {
+impl From<&LocalGradleProject> for GradleRelease {
+    fn from(project: &LocalGradleProject) -> Self {
+        let cloned = project.clone();
         GradleRelease {
-            gradle_version: project.gradle_version,
-            distribution_type: project.distribution_type,
-            wrapper_checksum: project.wrapper_checksum,
+            gradle_version: cloned.gradle_version,
+            distribution_type: cloned.distribution_type,
+            wrapper_checksum: cloned.wrapper_checksum,
         }
     }
 }

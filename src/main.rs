@@ -17,12 +17,7 @@ fn main() {
     setup_panic!();
 
     let arguments = ProgramArguments::parse();
-    let validations = validator::validate(
-        &arguments.path,
-        validator::local_projects::locate,
-        validator::gradle_releases::fetch,
-    )
-    .unwrap();
+    let validations = validator::locate_and_validate(&arguments.path).unwrap();
     println!("{:?}", validations);
 }
 
