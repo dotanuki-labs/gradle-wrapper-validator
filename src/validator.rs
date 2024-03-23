@@ -5,7 +5,7 @@ mod gradle_releases;
 mod local_projects;
 mod models;
 
-use crate::validator::models::{GradleRelease, LocalGradleProject, Result};
+use crate::validator::models::{GradleRelease, LocalGradleWrapper, Result};
 
 pub fn locate_and_validate(path_name: &str) -> Result<Vec<ValidationOutcome>> {
     validate(path_name, local_projects::locate, gradle_releases::fetch)
@@ -13,13 +13,13 @@ pub fn locate_and_validate(path_name: &str) -> Result<Vec<ValidationOutcome>> {
 
 #[derive(Debug, PartialEq)]
 pub struct ValidationOutcome {
-    local_project: LocalGradleProject,
+    local_project: LocalGradleWrapper,
     has_valid_wrapper_checksum: bool,
 }
 
 fn validate(
     base_path: &str,
-    locate_gradle_projects: fn(&str) -> Result<Vec<LocalGradleProject>>,
+    locate_gradle_projects: fn(&str) -> Result<Vec<LocalGradleWrapper>>,
     fetch_gradle_releases: fn() -> Result<Vec<GradleRelease>>,
 ) -> Result<Vec<ValidationOutcome>> {
     let gradle_releases = fetch_gradle_releases()?;
