@@ -5,7 +5,7 @@ mod gradle_releases;
 mod local_projects;
 mod models;
 
-use crate::validator::models::{GradleRelease, LocalGradleWrapper, Result};
+use crate::validator::models::{LocalGradleWrapper, OfficialWrapperChecksum, Result};
 
 pub fn locate_and_validate(path_name: &str) -> Result<Vec<ValidationOutcome>> {
     validate(path_name, local_projects::locate, gradle_releases::fetch)
@@ -20,20 +20,21 @@ pub struct ValidationOutcome {
 fn validate(
     base_path: &str,
     locate_gradle_projects: fn(&str) -> Result<Vec<LocalGradleWrapper>>,
-    fetch_gradle_releases: fn() -> Result<Vec<GradleRelease>>,
+    fetch_gradle_releases: fn() -> Result<Vec<OfficialWrapperChecksum>>,
 ) -> Result<Vec<ValidationOutcome>> {
-    let gradle_releases = fetch_gradle_releases()?;
+    let available_checksums = fetch_gradle_releases()?;
     let local_projects = locate_gradle_projects(base_path)?;
 
     let mut validations: Vec<ValidationOutcome> = Vec::new();
 
     for project in local_projects {
-        let expected_release = GradleRelease::from(&project);
-        let validation = gradle_releases.contains(&expected_release);
+        let validation = available_checksums
+            .iter()
+            .find(|wrapped| wrapped.value.eq(&project.wrapper_checksum));
 
         validations.push(ValidationOutcome {
             local_project: project,
-            has_valid_wrapper_checksum: validation,
+            has_valid_wrapper_checksum: validation.is_some(),
         })
     }
 
@@ -43,23 +44,25 @@ fn validate(
 #[cfg(test)]
 mod tests {
     use crate::validator::gradle_releases::fetch;
-    use crate::validator::local_projects::fakes::{locate_tampered_project, locate_valid_project};
-    use crate::validator::validate;
+    use crate::validator::{local_projects, validate};
 
     static FAKE_PATH_NAME: &str = "/usr/dev/my-projects";
 
     #[test]
     fn should_validate_local_project_when_checksum_matches() {
-        let fake_locator = locate_valid_project;
-        let validations = validate(FAKE_PATH_NAME, fake_locator, fetch).unwrap();
+        let project_dir = std::env::current_dir().unwrap();
+        let locator = local_projects::locate;
+        let test_data = format!("{}/test_data", &project_dir.to_string_lossy());
+
+        let validations = validate(&test_data, locator, fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(actual.has_valid_wrapper_checksum)
     }
 
     #[test]
     fn should_validate_local_project_when_checksum_does_not_match() {
-        let fake_locator = locate_tampered_project;
-        let validations = validate(FAKE_PATH_NAME, fake_locator, fetch).unwrap();
+        let locator = local_projects::fakes::locate_tampered_project;
+        let validations = validate(FAKE_PATH_NAME, locator, fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(!actual.has_valid_wrapper_checksum)
     }
