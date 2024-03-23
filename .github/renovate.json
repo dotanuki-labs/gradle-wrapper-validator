@@ -23,6 +23,10 @@
                 "custom.regex"
             ],
             "commitMessageTopic": "rust"
+        },
+        {
+            "matchManagers": [ "gradle-wrapper"],
+            "enabled": false
         }
     ],
     "customManagers": [
