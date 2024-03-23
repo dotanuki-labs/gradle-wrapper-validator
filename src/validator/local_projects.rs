@@ -7,7 +7,7 @@ use std::path::Path;
 use walkdir::{DirEntry, WalkDir};
 
 pub fn locate(raw_path: &str) -> Result<Vec<LocalGradleWrapper>> {
-    let found_wrappers: Vec<LocalGradleWrapper> = WalkDir::new(raw_path)
+    let mut found_wrappers: Vec<LocalGradleWrapper> = WalkDir::new(raw_path)
         .into_iter()
         .filter_map(|entry| entry.ok())
         .map(parse_wrapper_info)
@@ -15,6 +15,8 @@ pub fn locate(raw_path: &str) -> Result<Vec<LocalGradleWrapper>> {
         .collect();
 
     ensure!(!&found_wrappers.is_empty(), "No wrappers found");
+
+    found_wrappers.sort_by(|some, another| some.file_system_path.cmp(&another.file_system_path));
     Ok(found_wrappers)
 }
 
