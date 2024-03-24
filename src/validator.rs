@@ -13,8 +13,8 @@ pub fn locate_and_validate(path_name: &str) -> Result<Vec<ValidationOutcome>> {
 
 #[derive(Debug, PartialEq)]
 pub struct ValidationOutcome {
-    local_project: LocalGradleWrapper,
-    has_valid_wrapper_checksum: bool,
+    pub local_project: LocalGradleWrapper,
+    pub has_valid_wrapper_checksum: bool,
 }
 
 fn validate(
@@ -51,8 +51,8 @@ mod tests {
     #[test]
     fn should_validate_local_project_when_checksum_matches() {
         let project_dir = std::env::current_dir().unwrap();
+        let test_data = format!("{}/test_data/gradle8", &project_dir.to_string_lossy());
         let locator = local_projects::locate;
-        let test_data = format!("{}/test_data", &project_dir.to_string_lossy());
 
         let validations = validate(&test_data, locator, fetch).unwrap();
         let actual = validations.first().unwrap();
