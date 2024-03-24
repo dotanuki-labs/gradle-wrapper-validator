@@ -1,14 +1,14 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
-mod gradle_releases;
-mod local_projects;
+mod fetch_checksums;
+mod find_wrappers;
 mod models;
 
-use crate::validator::models::{LocalGradleWrapper, OfficialWrapperChecksum, Result};
+use models::{LocalGradleWrapper, OfficialWrapperChecksum};
 
-pub fn locate_and_validate(path_name: &str) -> Result<Vec<ValidationOutcome>> {
-    validate(path_name, local_projects::locate, gradle_releases::fetch)
+pub fn locate_and_validate(path_name: &str) -> anyhow::Result<Vec<ValidationOutcome>> {
+    validate(path_name, find_wrappers::find, fetch_checksums::fetch)
 }
 
 #[derive(Debug, PartialEq)]
@@ -19,9 +19,9 @@ pub struct ValidationOutcome {
 
 fn validate(
     base_path: &str,
-    locate_gradle_projects: fn(&str) -> Result<Vec<LocalGradleWrapper>>,
-    fetch_gradle_releases: fn() -> Result<Vec<OfficialWrapperChecksum>>,
-) -> Result<Vec<ValidationOutcome>> {
+    locate_gradle_projects: fn(&str) -> anyhow::Result<Vec<LocalGradleWrapper>>,
+    fetch_gradle_releases: fn() -> anyhow::Result<Vec<OfficialWrapperChecksum>>,
+) -> anyhow::Result<Vec<ValidationOutcome>> {
     let available_checksums = fetch_gradle_releases()?;
     let local_projects = locate_gradle_projects(base_path)?;
 
@@ -43,16 +43,14 @@ fn validate(
 
 #[cfg(test)]
 mod tests {
-    use crate::validator::gradle_releases::fetch;
-    use crate::validator::{local_projects, validate};
+    use crate::validator::{fetch_checksums, find_wrappers, validate};
 
     #[test]
     fn should_validate_local_project_when_checksum_matches() {
         let project_dir = std::env::current_dir().unwrap();
-        let valid_wrapper = format!("{}/test_data/valid/gradle8", &project_dir.to_string_lossy());
-        let locator = local_projects::locate;
+        let valid_wrapper = format!("{}/test-data/valid/gradle8", &project_dir.to_string_lossy());
 
-        let validations = validate(&valid_wrapper, locator, fetch).unwrap();
+        let validations = validate(&valid_wrapper, find_wrappers::find, fetch_checksums::fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(actual.has_valid_wrapper_checksum)
     }
@@ -60,10 +58,9 @@ mod tests {
     #[test]
     fn should_validate_local_project_when_checksum_does_not_match() {
         let project_dir = std::env::current_dir().unwrap();
-        let valid_wrapper = format!("{}/test_data/invalid/tampered", &project_dir.to_string_lossy());
-        let locator = local_projects::locate;
+        let valid_wrapper = format!("{}/test-data/invalid/tampered", &project_dir.to_string_lossy());
 
-        let validations = validate(&valid_wrapper, locator, fetch).unwrap();
+        let validations = validate(&valid_wrapper, find_wrappers::find, fetch_checksums::fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(!actual.has_valid_wrapper_checksum)
     }
