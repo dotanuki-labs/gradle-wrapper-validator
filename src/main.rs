@@ -1,24 +1,16 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
+mod cli;
 mod validator;
 
-use clap::Parser;
-use human_panic::setup_panic;
+use crate::cli::CommandLineInterface;
 
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct ProgramArguments {
-    #[arg(short, long)]
-    path: String,
-}
-
-fn main() {
-    setup_panic!();
-
-    let arguments = ProgramArguments::parse();
-    let validations = validator::locate_and_validate(&arguments.path).unwrap();
-    println!("{:?}", validations);
+fn main() -> anyhow::Result<()> {
+    let cli = CommandLineInterface::new();
+    let target_path = cli.parse_arguments();
+    let validations = validator::locate_and_validate(&target_path.0)?;
+    cli.report(&validations)
 }
 
 #[cfg(test)]
@@ -29,12 +21,26 @@ mod tests {
     static TOOL: &str = "gwv";
 
     #[test]
+    fn should_validate_test_wrappers() {
+        let mut cmd = Command::cargo_bin(TOOL).unwrap();
+
+        let project_dir = std::env::current_dir().unwrap();
+        let test_data = format!("{}/test_data", &project_dir.to_string_lossy());
+
+        let arguments = ["-p", &test_data];
+        let assert = cmd.args(arguments).assert();
+
+        let all_ok = "All Gradle wrappers have valid checksums";
+        assert.success().stdout(contains(all_ok));
+    }
+
+    #[test]
     fn should_show_help() {
         let mut cmd = Command::cargo_bin(TOOL).unwrap();
-        let description = "An opinionated way to kick-off CLI apps powered by Rust";
+        let description = "A validator for gradle/wrapper jar binaries, intended to be used in CI pipelines";
 
         let assert = cmd.arg("--help").assert();
-        assert.stdout(contains(description));
+        assert.success().stdout(contains(description));
     }
 
     #[test]
