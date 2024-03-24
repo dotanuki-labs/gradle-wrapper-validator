@@ -31,16 +31,6 @@ fn parse_wrapper_info(entry: DirEntry) -> Result<LocalGradleWrapper> {
 }
 
 #[cfg(test)]
-pub mod fakes {
-    use crate::validator::models::{LocalGradleWrapper, Result};
-
-    pub fn locate_tampered_project(path_name: &str) -> Result<Vec<LocalGradleWrapper>> {
-        let fake = LocalGradleWrapper::new(path_name, "84900f11f4a86050a8f83342ade7b6bc9b0d2bdd-tampered");
-        Ok(vec![fake])
-    }
-}
-
-#[cfg(test)]
 mod tests {
     use crate::validator::local_projects::locate;
     use crate::validator::models::LocalGradleWrapper;
@@ -48,7 +38,7 @@ mod tests {
     #[test]
     fn should_locate_gradle_wrappers() {
         let project_dir = std::env::current_dir().unwrap();
-        let test_data_dir = format!("{}/test_data", &project_dir.to_string_lossy());
+        let test_data_dir = format!("{}/test_data/valid", &project_dir.to_string_lossy());
 
         let found_wrappers = locate(&test_data_dir).unwrap();
 

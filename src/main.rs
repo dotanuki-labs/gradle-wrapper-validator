@@ -22,10 +22,18 @@ fn main() {
 }
 
 fn ensure_no_issues(outcomes: Vec<ValidationOutcome>) {
-    let issues = outcomes.iter().any(|check| !check.has_valid_wrapper_checksum);
+    let issues: Vec<&ValidationOutcome> = outcomes
+        .iter()
+        .filter(|check| !check.has_valid_wrapper_checksum)
+        .collect();
 
-    if issues {
+    if !issues.is_empty() {
         eprintln!("A Gradle wrapper with invalid checksum was found!");
+
+        for invalid in issues {
+            println!("{}", &invalid.local_project.file_system_path);
+        }
+
         exit(37)
     }
 
@@ -37,17 +45,21 @@ mod tests {
     use assert_cmd::Command;
     use predicates::str::contains;
 
-    static TOOL: &str = "gwv";
+    fn gwv() -> Command {
+        Command::cargo_bin("gwv").unwrap()
+    }
+
+    fn project_dir() -> String {
+        let root_dir = std::env::current_dir().unwrap();
+        String::from(root_dir.to_str().unwrap())
+    }
 
     #[test]
-    fn should_validate_test_wrappers() {
-        let mut cmd = Command::cargo_bin(TOOL).unwrap();
+    fn should_report_all_wrappers_with_valid_checksums() {
+        let valid_wrappers = format!("{}/test_data/valid", project_dir());
+        let arguments = ["-p", &valid_wrappers];
 
-        let project_dir = std::env::current_dir().unwrap();
-        let test_data = format!("{}/test_data", &project_dir.to_string_lossy());
-
-        let arguments = ["-p", &test_data];
-        let assert = cmd.args(arguments).assert();
+        let assert = gwv().args(arguments).assert();
 
         assert
             .success()
@@ -55,33 +67,40 @@ mod tests {
     }
 
     #[test]
-    fn should_report_custom_errors() {
-        let mut cmd = Command::cargo_bin(TOOL).unwrap();
-
-        let project_dir = std::env::current_dir().unwrap();
-        let no_wrappers = format!("{}/scripts", &project_dir.to_string_lossy());
-
+    fn should_report_no_wrappers_found() {
+        let no_wrappers = format!("{}/scripts", project_dir());
         let arguments = ["-p", &no_wrappers];
-        let assert = cmd.args(arguments).assert();
+
+        let assert = gwv().args(arguments).assert();
 
         assert.failure().stderr(contains("No wrappers found"));
     }
 
     #[test]
-    fn should_show_help() {
-        let mut cmd = Command::cargo_bin(TOOL).unwrap();
-        let description = "A validator for gradle/wrapper jar binaries, intended to be used in CI pipelines";
+    fn should_report_tampered_wrapper_found() {
+        let invalid_wrapper = format!("{}/test_data/invalid", project_dir());
+        let arguments = ["-p", &invalid_wrapper];
 
-        let assert = cmd.arg("--help").assert();
-        assert.success().stdout(contains(description));
+        let assert = gwv().args(arguments).assert();
+
+        assert
+            .failure()
+            .stderr(contains("A Gradle wrapper with invalid checksum was found"));
+    }
+
+    #[test]
+    fn should_show_help() {
+        let assert = gwv().arg("--help").assert();
+
+        let intro = "A validator for gradle/wrapper jar binaries, intended to be used in CI pipelines";
+        assert.success().stdout(contains(intro));
     }
 
     #[test]
     fn should_fail_without_arguments() {
-        let mut cmd = Command::cargo_bin(TOOL).unwrap();
-        let instruction = "required arguments were not provided";
+        let no_arguments = "required arguments were not provided";
 
-        let assert = cmd.assert();
-        assert.failure().stderr(contains(instruction));
+        let assert = gwv().assert();
+        assert.failure().stderr(contains(no_arguments));
     }
 }
