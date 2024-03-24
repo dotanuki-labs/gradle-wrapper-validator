@@ -5,12 +5,31 @@ mod cli;
 mod validator;
 
 use crate::cli::CommandLineInterface;
+use crate::validator::ValidationOutcome;
+use std::process::exit;
 
-fn main() -> anyhow::Result<()> {
+fn main() {
     let cli = CommandLineInterface::new();
     let target_path = cli.parse_arguments();
-    let validations = validator::locate_and_validate(&target_path.0)?;
-    cli.report(&validations)
+
+    match validator::locate_and_validate(&target_path.0) {
+        Ok(outcomes) => ensure_no_issues(outcomes),
+        Err(wrapped) => {
+            eprintln!("{}", &wrapped.to_string());
+            exit(42)
+        },
+    }
+}
+
+fn ensure_no_issues(outcomes: Vec<ValidationOutcome>) {
+    let issues = outcomes.iter().any(|check| !check.has_valid_wrapper_checksum);
+
+    if issues {
+        eprintln!("A Gradle wrapper with invalid checksum was found!");
+        exit(37)
+    }
+
+    println!("All Gradle wrappers have valid checksums");
 }
 
 #[cfg(test)]
@@ -30,8 +49,22 @@ mod tests {
         let arguments = ["-p", &test_data];
         let assert = cmd.args(arguments).assert();
 
-        let all_ok = "All Gradle wrappers have valid checksums";
-        assert.success().stdout(contains(all_ok));
+        assert
+            .success()
+            .stdout(contains("All Gradle wrappers have valid checksums"));
+    }
+
+    #[test]
+    fn should_report_custom_errors() {
+        let mut cmd = Command::cargo_bin(TOOL).unwrap();
+
+        let project_dir = std::env::current_dir().unwrap();
+        let no_wrappers = format!("{}/scripts", &project_dir.to_string_lossy());
+
+        let arguments = ["-p", &no_wrappers];
+        let assert = cmd.args(arguments).assert();
+
+        assert.failure().stderr(contains("No wrappers found"));
     }
 
     #[test]
