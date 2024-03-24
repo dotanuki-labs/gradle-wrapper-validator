@@ -46,23 +46,24 @@ mod tests {
     use crate::validator::gradle_releases::fetch;
     use crate::validator::{local_projects, validate};
 
-    static FAKE_PATH_NAME: &str = "/usr/dev/my-projects";
-
     #[test]
     fn should_validate_local_project_when_checksum_matches() {
         let project_dir = std::env::current_dir().unwrap();
-        let test_data = format!("{}/test_data/gradle8", &project_dir.to_string_lossy());
+        let valid_wrapper = format!("{}/test_data/valid/gradle8", &project_dir.to_string_lossy());
         let locator = local_projects::locate;
 
-        let validations = validate(&test_data, locator, fetch).unwrap();
+        let validations = validate(&valid_wrapper, locator, fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(actual.has_valid_wrapper_checksum)
     }
 
     #[test]
     fn should_validate_local_project_when_checksum_does_not_match() {
-        let locator = local_projects::fakes::locate_tampered_project;
-        let validations = validate(FAKE_PATH_NAME, locator, fetch).unwrap();
+        let project_dir = std::env::current_dir().unwrap();
+        let valid_wrapper = format!("{}/test_data/invalid/tampered", &project_dir.to_string_lossy());
+        let locator = local_projects::locate;
+
+        let validations = validate(&valid_wrapper, locator, fetch).unwrap();
         let actual = validations.first().unwrap();
         assert!(!actual.has_valid_wrapper_checksum)
     }
