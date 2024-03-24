@@ -45,10 +45,14 @@ fn validate(
 mod tests {
     use crate::validator::{fetch_checksums, find_wrappers, validate};
 
+    fn project_dir() -> String {
+        let root_dir = std::env::current_dir().unwrap();
+        String::from(root_dir.to_str().unwrap())
+    }
+
     #[test]
     fn should_validate_local_project_when_checksum_matches() {
-        let project_dir = std::env::current_dir().unwrap();
-        let valid_wrapper = format!("{}/test-data/valid/gradle8", &project_dir.to_string_lossy());
+        let valid_wrapper = format!("{}/test-data/valid/gradle8", project_dir());
 
         let validations = validate(&valid_wrapper, find_wrappers::find, fetch_checksums::fetch).unwrap();
         let actual = validations.first().unwrap();
@@ -57,8 +61,7 @@ mod tests {
 
     #[test]
     fn should_validate_local_project_when_checksum_does_not_match() {
-        let project_dir = std::env::current_dir().unwrap();
-        let valid_wrapper = format!("{}/test-data/invalid/tampered", &project_dir.to_string_lossy());
+        let valid_wrapper = format!("{}/test-data/invalid/tampered", project_dir());
 
         let validations = validate(&valid_wrapper, find_wrappers::find, fetch_checksums::fetch).unwrap();
         let actual = validations.first().unwrap();
