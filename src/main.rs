@@ -2,45 +2,14 @@
 // SPDX-License-Identifier: MIT
 
 mod cli;
+mod gwv;
 mod validator;
 
 use crate::cli::CommandLineInterface;
-use crate::validator::ValidationOutcome;
-use std::process::exit;
-
-static EXIT_CODE_CANNOT_VALID_WRAPPERS: i32 = 13;
-static EXIT_CODE_TAMPERED_WRAPPER_FOUND: i32 = 19;
 
 fn main() {
     let cli = CommandLineInterface::new();
-    let target_path = cli.parse_arguments();
-
-    match validator::locate_and_validate(&target_path.0) {
-        Ok(outcomes) => ensure_no_issues(outcomes),
-        Err(wrapped) => {
-            eprintln!("{}", &wrapped.to_string());
-            exit(EXIT_CODE_CANNOT_VALID_WRAPPERS)
-        },
-    }
-}
-
-fn ensure_no_issues(outcomes: Vec<ValidationOutcome>) {
-    let issues: Vec<&ValidationOutcome> = outcomes
-        .iter()
-        .filter(|check| !check.has_valid_wrapper_checksum)
-        .collect();
-
-    if !issues.is_empty() {
-        eprintln!("A Gradle wrapper with invalid checksum was found!");
-
-        for invalid in issues {
-            println!("{}", &invalid.local_project.file_system_path);
-        }
-
-        exit(EXIT_CODE_TAMPERED_WRAPPER_FOUND)
-    }
-
-    println!("All Gradle wrappers have valid checksums");
+    gwv::validate(cli.parse_arguments());
 }
 
 #[cfg(test)]
@@ -48,7 +17,7 @@ mod tests {
     use assert_cmd::Command;
     use predicates::str::contains;
 
-    use crate::{EXIT_CODE_CANNOT_VALID_WRAPPERS, EXIT_CODE_TAMPERED_WRAPPER_FOUND};
+    use crate::gwv;
 
     fn gwv() -> Command {
         Command::cargo_bin("gwv").unwrap()
@@ -80,7 +49,7 @@ mod tests {
 
         assert
             .failure()
-            .code(EXIT_CODE_CANNOT_VALID_WRAPPERS)
+            .code(gwv::EXIT_CODE_CANNOT_VALID_WRAPPERS)
             .stderr(contains("No wrappers found"));
     }
 
@@ -93,7 +62,7 @@ mod tests {
 
         assert
             .failure()
-            .code(EXIT_CODE_TAMPERED_WRAPPER_FOUND)
+            .code(gwv::EXIT_CODE_TAMPERED_WRAPPER_FOUND)
             .stderr(contains("A Gradle wrapper with invalid checksum was found"));
     }
 
