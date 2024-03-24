@@ -8,6 +8,9 @@ use crate::cli::CommandLineInterface;
 use crate::validator::ValidationOutcome;
 use std::process::exit;
 
+static EXIT_CODE_CANNOT_VALID_WRAPPERS: i32 = 13;
+static EXIT_CODE_TAMPERED_WRAPPER_FOUND: i32 = 19;
+
 fn main() {
     let cli = CommandLineInterface::new();
     let target_path = cli.parse_arguments();
@@ -16,7 +19,7 @@ fn main() {
         Ok(outcomes) => ensure_no_issues(outcomes),
         Err(wrapped) => {
             eprintln!("{}", &wrapped.to_string());
-            exit(42)
+            exit(EXIT_CODE_CANNOT_VALID_WRAPPERS)
         },
     }
 }
@@ -34,7 +37,7 @@ fn ensure_no_issues(outcomes: Vec<ValidationOutcome>) {
             println!("{}", &invalid.local_project.file_system_path);
         }
 
-        exit(37)
+        exit(EXIT_CODE_TAMPERED_WRAPPER_FOUND)
     }
 
     println!("All Gradle wrappers have valid checksums");
@@ -44,6 +47,8 @@ fn ensure_no_issues(outcomes: Vec<ValidationOutcome>) {
 mod tests {
     use assert_cmd::Command;
     use predicates::str::contains;
+
+    use crate::{EXIT_CODE_CANNOT_VALID_WRAPPERS, EXIT_CODE_TAMPERED_WRAPPER_FOUND};
 
     fn gwv() -> Command {
         Command::cargo_bin("gwv").unwrap()
@@ -73,7 +78,10 @@ mod tests {
 
         let assert = gwv().args(arguments).assert();
 
-        assert.failure().stderr(contains("No wrappers found"));
+        assert
+            .failure()
+            .code(EXIT_CODE_CANNOT_VALID_WRAPPERS)
+            .stderr(contains("No wrappers found"));
     }
 
     #[test]
@@ -85,6 +93,7 @@ mod tests {
 
         assert
             .failure()
+            .code(EXIT_CODE_TAMPERED_WRAPPER_FOUND)
             .stderr(contains("A Gradle wrapper with invalid checksum was found"));
     }
 
@@ -92,7 +101,7 @@ mod tests {
     fn should_show_help() {
         let assert = gwv().arg("--help").assert();
 
-        let intro = "A validator for gradle/wrapper jar binaries, intended to be used in CI pipelines";
+        let intro = "A validator for gradle/wrapper jar binaries";
         assert.success().stdout(contains(intro));
     }
 
