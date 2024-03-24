@@ -3,8 +3,6 @@
 
 use serde::Deserialize;
 
-pub type Result<T> = anyhow::Result<T>;
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct LocalGradleWrapper {
     pub wrapper_checksum: String,
