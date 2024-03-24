@@ -35,10 +35,14 @@ mod tests {
     use crate::validator::find_wrappers::find;
     use crate::validator::models::LocalGradleWrapper;
 
+    fn project_dir() -> String {
+        let root_dir = std::env::current_dir().unwrap();
+        String::from(root_dir.to_str().unwrap())
+    }
+
     #[test]
     fn should_locate_gradle_wrappers() {
-        let project_dir = std::env::current_dir().unwrap();
-        let test_data_dir = format!("{}/test-data/valid", &project_dir.to_string_lossy());
+        let test_data_dir = format!("{}/test-data/valid", project_dir());
 
         let found_wrappers = find(&test_data_dir).unwrap();
 
@@ -57,10 +61,9 @@ mod tests {
 
     #[test]
     fn should_handle_no_wrappers_found() {
-        let project_dir = std::env::current_dir().unwrap();
-        let scripts_dir = format!("{}/scripts", &project_dir.to_string_lossy());
+        let github_dir = format!("{}/.github", project_dir());
 
-        let found_wrappers = find(&scripts_dir);
+        let found_wrappers = find(&github_dir);
 
         assert!(found_wrappers.is_err());
     }
