@@ -7,7 +7,7 @@ on:
   workflow_dispatch
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-22.04
 
     steps:
@@ -32,7 +32,10 @@ jobs:
         id: prepare-release
         run: ./scripts/prepare-release.sh
 
-      - name: Create draft release
+      - name: Publish on crates.io
+        run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
+
+      - name: Publish draft Github release
         uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564 # v2.0.4
         with:
           name: ${{ steps.prepare-release.outputs.version }}
