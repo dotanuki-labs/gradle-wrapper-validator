@@ -1,5 +1,11 @@
 # gradle-wrapper-validator
 
+[![rustfmt](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://rust-lang.github.io/rustfmt)
+[![DeepSource](https://app.deepsource.com/gh/dotanuki-labs/gradle-wrapper-validator.svg/?label=active+issues&show_trend=false&token=RkvGszk0c0X5b_NOtG5k501L)](https://app.deepsource.com/gh/dotanuki-labs/gradle-wrapper-validator/)
+[![CI](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml)
+[![Crates.io Version](https://img.shields.io/crates/v/gwv)](https://crates.io/crates/gwv)
+[![License](https://img.shields.io/github/license/dotanuki-labs/norris)](https://choosealicense.com/licenses/mit)
+
 > A validator for gradle/wrapper jar binaries for your CI pipelines.
 
 ## Why
