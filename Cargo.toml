@@ -8,6 +8,7 @@ repository = "https://github.com/dotanuki-labs/gradle-wrapper-validator"
 readme = "README.md"
 license = "MIT"
 publish = true
+categories = ["command-line-utilities"]
 
 [dependencies]
 anyhow = "1.0.81"
@@ -20,6 +21,9 @@ serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.114"
 walkdir = "2.5.0"
 sha256 = "1.5.0"
+
+[[bin]]
+name = "gwv"
 
 [profile.release]
 strip = true
