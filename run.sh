@@ -1,0 +1,94 @@
+#! /usr/bin/env bash
+# Copyright 2024 Dotanuki Labs
+# SPDX-License-Identifier: MIT
+
+set -eo pipefail
+
+current_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+readonly github_org="https://github.com/dotanuki-labs"
+readonly release="gradle-wrapper-validator/releases/latest/download"
+readonly bin_name="gwv"
+readonly tool_home="$HOME/bin/dotanuki"
+readonly gwv="$tool_home/$bin_name"
+
+target_path="$1"
+
+require_target_path() {
+    if [[ -z "$target_path" ]]; then
+        target_path="$current_dir"
+    fi
+
+    if [[ ! -d "$target_path" ]]; then
+        echo
+        echo "$target_path should be an existing directory."
+        echo "Usage :"
+        echo "./run.sh (runs on current folder)"
+        echo "./run.sh $HOME/IdeaProjects/my-project"
+        echo
+        exit 1
+    fi
+}
+
+find_os_sulfix() {
+    local os
+    os="$(uname -s)"
+
+    if [ "$os" == "Darwin" ]; then
+        echo "apple-darwin"
+
+    elif [ "$os" == "Linux" ]; then
+        echo "unknown-linux-gnu"
+    else
+        echo "Unsupported OS -> $os"
+        exit 1
+    fi
+}
+
+find_machine_prefix() {
+    local machine
+    machine="$(uname -m)"
+
+    if [ "$machine" == "x86_64" ]; then
+        echo "$machine"
+
+    elif [ "$machine" == "arm64" ]; then
+        echo "aarch64"
+    else
+        echo "Unsupported architecture -> $machine"
+        exit 1
+    fi
+}
+
+cleanup() {
+    rm -rf "$tool_home"
+}
+
+create_installation_dir() {
+    cleanup
+    mkdir "$tool_home"
+}
+
+download_target_bin() {
+    local prefix
+    prefix=$(find_machine_prefix)
+
+    local sulfix
+    sulfix=$(find_os_sulfix)
+
+    local target="$github_org/$release/$bin_name-$prefix-$sulfix"
+    curl -L --proto '=https' --tlsv1.2 -sSf --url "$target" -o "$gwv"
+    chmod +x "$gwv"
+}
+
+validate_wrappers() {
+    "$gwv" --path "$target_path"
+    cleanup
+}
+
+echo
+require_target_path
+create_installation_dir
+download_target_bin || cleanup
+validate_wrappers || cleanup
+echo

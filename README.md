@@ -19,6 +19,13 @@ it on Github Workflows, there is no need to change!
 If you are into CircleCI, Bitrise, TeamCity, GitlabCI or others, this project
 may be useful!
 
+## What
+
+This tool will recursively walk the provided `path` and flag any `gradle/gradle-wrapper.jar`
+files with
+[unknown checksums](https://services.gradle.org/versions/all),
+exiting with success otherwise.
+
 ## Installing
 
 Installing from [crates.io](https://crates.io) (requires Rust/Cargo):
@@ -31,14 +38,23 @@ More install methods to come! Stay tuned!
 
 ## Using
 
+On-off execution (current folder)
+
+```bash
+$> curl https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run.sh | bash
+```
+
+On-off execution (custom folder)
+
+```bash
+$> curl https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run.sh | bash -s -- <path/to/folder>
+```
+
+If installed with Cargo (or other)
+
 ```bash
 $> gwv --path <path/to/gradle/projects>
 ```
-
-This tool will recursively walk the provided `path` and flag any `gradle/gradle-wrapper.jar`
-files with
-[unknown checksums](https://services.gradle.org/versions/all),
-exiting with success otherwise.
 
 ## License
 
