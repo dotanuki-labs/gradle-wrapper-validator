@@ -38,16 +38,17 @@ More install methods to come! Stay tuned!
 
 ## Using
 
-On-off execution (current folder)
+One-off execution (current folder)
 
 ```bash
 curl -sSf https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run | bash
 ```
 
-On-off execution (custom folder)
+One-off execution (custom folder)
 
 ```bash
-curl -sSf https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run | bash -s -- <path/to/folder>
+curl -sSf https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run |\
+  bash -s -- <path/to/folder>
 ```
 
 If installed with Cargo (or other)
