@@ -11,7 +11,7 @@ publish = true
 categories = ["command-line-utilities"]
 
 [dependencies]
-anyhow = "1.0.81"
+anyhow = "1.0.82"
 clap = { version = "4.5.4", features = ["derive"] }
 human-panic = "1.2.3"
 ureq = { version = "2.9.6", features = ["json"] }
