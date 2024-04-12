@@ -28,7 +28,7 @@ exiting with success otherwise.
 
 ## Installing
 
-> [!NOTE] 
+> [!NOTE]
 > **Minimum supported Rust version** (MSRV) : 1.74.0
 
 Installing from [crates.io](https://crates.io/crates/gwv) (requires Rust / Cargo):
@@ -36,8 +36,6 @@ Installing from [crates.io](https://crates.io/crates/gwv) (requires Rust / Cargo
 ```bash
 cargo install gwv
 ```
-
-
 
 More install methods to come! Stay tuned!
 
