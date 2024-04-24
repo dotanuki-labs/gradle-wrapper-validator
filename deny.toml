@@ -1,6 +1,8 @@
 [advisories]
 ignore = [
-    # No advisories so far!
+    # Already patched, no impact on this project
+    # https://github.com/algesten/ureq/pull/748
+    "RUSTSEC-2024-0336",
 ]
 
 [licenses]
@@ -12,7 +14,7 @@ allow = [
     "ISC",
     "BSD-3-Clause",
     "MPL-2.0",
-    "OpenSSL"
+    "OpenSSL",
 ]
 
 
@@ -20,7 +22,4 @@ allow = [
 [[licenses.clarify]]
 name = "ring"
 expression = "MIT AND ISC AND OpenSSL"
-license-files = [
-    { path = "LICENSE", hash = 0xbd0eed23 }
-]
-
+license-files = [{ path = "LICENSE", hash = 0xbd0eed23 }]
