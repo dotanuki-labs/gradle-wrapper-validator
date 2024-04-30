@@ -29,7 +29,7 @@ exiting with success otherwise.
 ## Installing
 
 > [!NOTE]
-> **Minimum supported Rust version** (MSRV) : 1.74.0
+> This tool is compatible with `macOS` and `Linux` boxes, running over `x86_64` or `aarch64` hardware
 
 Installing from [crates.io](https://crates.io/crates/gwv) (requires Rust / Cargo):
 
@@ -37,9 +37,12 @@ Installing from [crates.io](https://crates.io/crates/gwv) (requires Rust / Cargo
 cargo install gwv
 ```
 
-More install methods to come! Stay tuned!
+Installing with [homebrew](https://brew.sh/) (macOS/Linux)
 
-## Using
+```bash
+brew tap dotanuki-labs/taps
+brew install gwv
+```
 
 One-off execution (current folder)
 
@@ -47,17 +50,19 @@ One-off execution (current folder)
 curl -sSf https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run | bash
 ```
 
+## Using
+
+If installed with Cargo or brew
+
+```bash
+gwv --path <path/to/gradle/projects>
+```
+
 One-off execution (custom folder)
 
 ```bash
 curl -sSf https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run |\
   bash -s -- <path/to/folder>
-```
-
-If installed with Cargo (or other)
-
-```bash
-gwv --path <path/to/gradle/projects>
 ```
 
 ## License
