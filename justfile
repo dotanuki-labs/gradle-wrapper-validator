@@ -18,14 +18,20 @@ cargo-plugins-local:
     yes | cargo binstall cargo-get --secure --force
     @echo
 
-# Performs setup for this project (local)
+# Performs setup for this project (local/stable)
 setup-local: toolchain cargo-plugins-local
     @echo
     @echo "✅ Setup (local) concluded"
     @echo
 
+# Performs setup for this project (nightly)
+setup-nightly:
+    @echo "→ Installing nightly toolchain and Miri"
+    rustup toolchain install nightly
+    @echo
+
 # Check code formatting and smells
-lint: toolchain
+lint:
     @echo "→ Checking code formatting (rustfmt)"
     cargo fmt --check
     @echo
@@ -35,19 +41,25 @@ lint: toolchain
     @echo
 
 # Build project against the local toolchain
-simple-build: toolchain
+build:
     @echo "→ Compile project and build binary"
     cargo build
     @echo
 
 # Run Tests
-tests: simple-build
+tests:
     @echo "→ Run project tests"
     cargo nextest run
     @echo
 
+# Run project with additional runtime checks
+dynamic-checks:
+    @echo "→ Run project with additional runtime checks"
+    cargo +nightly careful run -- --path test-data/valid
+    @echo
+
 # Emulates CI checks
-emulate-ci: lint tests
+emulate-ci: lint tests build
     @echo
     @echo "✅ Emulated a CI build with success"
     @echo
@@ -65,9 +77,10 @@ cargo-plugins-ci:
     yes | cargo binstall cargo-nextest --secure --force
     yes | cargo binstall cargo-get --secure --force
     yes | cargo binstall cargo-msrv --secure --force
+    yes | cargo binstall cargo-careful --secure --force
     @echo
 
-# Performs setup for this project (CI)
+# Performs setup for this project (CI/stable)
 setup-ci: toolchain cargo-plugins-ci
     @echo "✅ Setup (CI) concluded"
     @echo

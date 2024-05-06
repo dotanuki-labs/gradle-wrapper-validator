@@ -21,6 +21,41 @@ jobs:
         with:
           file-patterns: '*.sh,*.rs,*.yml'
           license: 'mit'
+
+  lint-tests:
+    runs-on: ubuntu-22.04
+    needs: essential-checks
+
+    steps:
+      - name: Project Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+
+      - name: Setup CI
+        uses: ./.github/actions/setup-rust
+
+      - name: Lint project
+        run: just lint
+
+      - name: Run tests
+        run: just tests
+
+  dynamic-checks:
+    runs-on: ubuntu-22.04
+    needs: essential-checks
+
+    steps:
+      - name: Project Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+
+      - name: Setup CI
+        uses: ./.github/actions/setup-rust
+
+      - name: Setup Rust toolchain (nightly)
+        run: just setup-nightly
+
+      - name: Run project with dynamic checks
+        run: just dynamic-checks
+
   build:
     runs-on: ubuntu-22.04
     needs: essential-checks
@@ -29,42 +64,37 @@ jobs:
       - name: Project Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
 
-      - name: Setup CI caching
-        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
-        with:
-            save-if: ${{ github.ref == 'refs/heads/main' }}
-
-      - name: Install additional tools
-        run: |
-            sudo snap install --edge --classic just
-            sudo snap install zig --classic --beta && zig version
-
-      - name: Setup Rust and Cargo plugins
-        run: just setup-ci
-
-      - name: Check code smells
-        run: just lint
-
-      - name: Run tests
-        run: just tests
-
-      - name: Check supply-chain issues
-        run: just supply-chain-checks
-
-      - name: Check MSRV
-        run: just msrv-check
+      - name: Setup CI
+        uses: ./.github/actions/setup-rust
 
       - name: Build against all supported targets
         run: just cross-build
-
-      - name: Archive SBOM
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
-        with:
-            name: sbom-${{ github.sha }}.json
-            path: gwv.cdx.json
 
       - name: Archive binaries
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
             name: gwv-binaries
             path: target/ci
+
+  security:
+    runs-on: ubuntu-22.04
+    needs: [build, lint-tests, dynamic-checks]
+
+    steps:
+      - name: Project Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+
+      - name: Setup CI
+        uses: ./.github/actions/setup-rust
+
+      - name: Check Rust Compiler compatibility
+        run: just msrv-check
+
+      - name: Check supply-chain issues
+        run: just supply-chain-checks
+
+      - name: Archive SBOM
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: sbom-${{ github.sha }}.json
+          path: gwv.cdx.json
