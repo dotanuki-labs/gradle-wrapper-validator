@@ -3,8 +3,7 @@
 
 name: CD
 
-on:
-  workflow_dispatch
+on: workflow_dispatch
 
 jobs:
   publish:
@@ -20,13 +19,13 @@ jobs:
           sudo snap install zig --classic --beta && zig version
 
       - name: Setup Rust and Cargo plugins
-        run: just setup-ci
+        run: just setup
 
       - name: Check supply-chain issues
-        run: just supply-chain-checks
+        run: just security
 
       - name: Build against all supported targets
-        run: just cross-build
+        run: just assemble
 
       - name: Prepare to release
         id: prepare-release
