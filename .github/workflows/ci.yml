@@ -21,6 +21,7 @@ jobs:
         with:
           file-patterns: '*.sh,*.rs,*.yml'
           license: 'mit'
+
   build:
     runs-on: ubuntu-22.04
     needs: essential-checks
@@ -40,7 +41,10 @@ jobs:
             sudo snap install zig --classic --beta && zig version
 
       - name: Setup Rust and Cargo plugins
-        run: just setup-ci
+        run: just setup
+
+      - name: Check MSRV
+        run: just msrv
 
       - name: Check code smells
         run: just lint
@@ -49,13 +53,10 @@ jobs:
         run: just tests
 
       - name: Check supply-chain issues
-        run: just supply-chain-checks
-
-      - name: Check MSRV
-        run: just msrv-check
+        run: just security
 
       - name: Build against all supported targets
-        run: just cross-build
+        run: just assemble
 
       - name: Archive SBOM
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
