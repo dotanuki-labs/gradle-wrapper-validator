@@ -13,12 +13,7 @@ setup:
     ./scripts/cargo-binstaller.sh
     @echo
     @echo "→ Installing Cargo extensions"
-    cargo binstall cargo-deny --no-confirm --force --quiet
-    cargo binstall cargo-cyclonedx --no-confirm --force --quiet
-    cargo binstall cargo-zigbuild --no-confirm --force --quiet
-    cargo binstall cargo-nextest --no-confirm --force --quiet
-    cargo binstall cargo-get --no-confirm --force --quiet
-    cargo binstall cargo-msrv --no-confirm --force --quiet
+    ./scripts/cargo-plugins.sh
     @echo
 
 # Checks minimum supported Rust toolchain version
