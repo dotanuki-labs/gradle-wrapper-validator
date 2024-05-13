@@ -2,6 +2,6 @@
 cargo-deny = "0.14.23"
 cargo-cyclonedx = "0.5.0"
 cargo-zigbuild = "0.18.4"
-cargo-nextest = "0.9.68"
+cargo-nextest = "0.9.70"
 cargo-get = "1.1.1"
 cargo-msrv = "0.15.1"
