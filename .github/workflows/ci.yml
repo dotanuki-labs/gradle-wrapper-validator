@@ -19,8 +19,8 @@ jobs:
       - name: Run essential checks
         uses: dotanuki-labs/github-actions/essentials@main
         with:
-          file-patterns: '*.sh,*.rs,*.yml'
-          license: 'mit'
+          file-patterns: "*.sh,*.rs,*.yml"
+          license: "mit"
 
   build:
     runs-on: ubuntu-22.04
@@ -33,12 +33,13 @@ jobs:
       - name: Setup CI caching
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
         with:
-            save-if: ${{ github.ref == 'refs/heads/main' }}
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      - name: Install additional tools
-        run: |
-            sudo snap install --edge --classic just
-            sudo snap install zig --classic --beta && zig version
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+
+      - name: Install required tooling
+        run: ./scripts/install-requirements.sh
 
       - name: Setup Rust and Cargo plugins
         run: just setup
@@ -61,11 +62,11 @@ jobs:
       - name: Archive SBOM
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
-            name: sbom-${{ github.sha }}.json
-            path: gwv.cdx.json
+          name: sbom-${{ github.sha }}.json
+          path: gwv.cdx.json
 
       - name: Archive binaries
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
-            name: gwv-binaries
-            path: target/ci
+          name: gwv-binaries
+          path: target/ci
