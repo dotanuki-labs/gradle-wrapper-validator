@@ -1,0 +1,24 @@
+# Copyright 2024 Dotanuki Labs
+# SPDX-License-Identifier: MIT
+
+name: "Setup Rust build"
+description: "Common steps before running a Rust/Cargo task"
+
+runs:
+    using: "composite"
+    steps:
+        - name: Install asdf
+          uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+
+        - name: Install local required tools
+          shell: bash
+          run: ./scripts/install-requirements.sh
+
+        - name: Install additional tools (Mac-only)
+          if: runner.os == 'macOS'
+          shell: bash
+          run: brew install coreutils
+
+        - name: Setup Rust and Cargo plugins
+          shell: bash
+          run: just setup

@@ -21,5 +21,7 @@ asdf plugin add just || true
 asdf install
 echo
 
+echo "Zig version -> $(zig version)"
+
 echo "Done!"
 echo

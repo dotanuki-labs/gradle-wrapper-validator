@@ -44,10 +44,10 @@ tests:
     cargo nextest run
     @echo
 
-# Builds release binaries for all supported compilation targets
+# Builds binaries according to local or CI environment
 assemble:
-    @echo "→ Building binaries for all supported targets"
-    ./scripts/cross-build.sh
+    @echo "→ Building project according to local or CI environment"
+    ./scripts/flex-build.sh
     @echo
 
 # Runs supply-chain checks and generates SecOps artifacts
