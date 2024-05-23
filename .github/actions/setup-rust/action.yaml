@@ -14,10 +14,15 @@ runs:
           shell: bash
           run: ./scripts/install-requirements.sh
 
+        - name: Install additional tools (Linux)
+          if: runner.os == 'Linux'
+          shell: bash
+          run: sudo snap install zig --classic --beta && zig version
+
         - name: Install additional tools (Mac-only)
           if: runner.os == 'macOS'
           shell: bash
-          run: brew install coreutils
+          run: brew install coreutils zig
 
         - name: Setup Rust and Cargo plugins
           shell: bash

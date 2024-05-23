@@ -8,11 +8,23 @@ set -euo pipefail
 readonly platform="${RUNNER_OS:-local}"
 readonly output_dir="target/ci"
 
-build() {
+build_with_standard_linker() {
     local target="$1"
 
     rustup target add "$target"
     cargo build --release --target "$target"
+
+    local binary="target/$target/release/gwv"
+    cp "$binary" "$output_dir"/gwv-"$target"
+    chmod +x "$output_dir"/gwv-"$target"
+    sha256sum "$binary" >>"$output_dir"/gwv-"$target"-sha256
+}
+
+build_with_zig_as_linker() {
+    local target="$1"
+
+    rustup target add "$target"
+    cargo zigbuild --release --target "$target"
 
     local binary="target/$target/release/gwv"
     cp "$binary" "$output_dir"/gwv-"$target"
@@ -34,7 +46,7 @@ ci_build_mac() {
     echo
 
     for arch in x86_64 aarch64; do
-        build "$arch-apple-darwin"
+        build_with_standard_linker "$arch-apple-darwin"
     done
 }
 
@@ -44,7 +56,7 @@ ci_build_linux() {
     echo
 
     for arch in x86_64 aarch64; do
-        build "$arch-unknown-linux-gnu"
+        build_with_zig_as_linker "$arch-unknown-linux-gnu"
     done
 }
 

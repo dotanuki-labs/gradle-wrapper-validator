@@ -16,12 +16,9 @@ if ! which asdf >/dev/null; then
 fi
 
 echo
-asdf plugin add zig || true
 asdf plugin add just || true
 asdf install
+
 echo
-
-echo "Zig version -> $(zig version)"
-
 echo "Done!"
 echo
