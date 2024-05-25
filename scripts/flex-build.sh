@@ -46,7 +46,7 @@ ci_build_mac() {
     echo
 
     for arch in x86_64 aarch64; do
-        build_with_standard_linker "$arch-apple-darwin"
+        build_with_zig_as_linker "$arch-apple-darwin"
     done
 }
 
