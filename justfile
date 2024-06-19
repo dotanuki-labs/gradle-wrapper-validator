@@ -47,7 +47,7 @@ tests:
 # Builds release binaries for all supported compilation targets
 assemble:
     @echo "→ Building binaries for all supported targets"
-    ./scripts/cross-build.sh
+    ./scripts/flex-build.sh
     @echo
 
 # Runs supply-chain checks and generates SecOps artifacts
