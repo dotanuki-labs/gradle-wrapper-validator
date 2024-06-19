@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  docs:
+  check-docs:
     runs-on: ubuntu-22.04
     steps:
       - name: Project Checkout
@@ -25,12 +25,15 @@ jobs:
       - name: Check MIT license on source files
         uses: dotanuki-labs/github-actions/foss/check-licenses@main
         with:
-          file-patterns: "*.sh,*.rs,*.yml"
-          license: "mit"
+          file-patterns: '*.sh,*.rs,*.yml'
+          license: 'mit'
+
+      - name: Build documentation assets
+        uses: dotanuki-labs/github-actions/foss/prepare-ghpages@main
 
   lint:
     runs-on: ubuntu-22.04
-    needs: docs
+    needs: check-docs
 
     steps:
       - name: Project Checkout
@@ -50,7 +53,7 @@ jobs:
 
   tests:
     runs-on: ubuntu-22.04
-    needs: docs
+    needs: check-docs
 
     steps:
       - name: Project Checkout
@@ -66,7 +69,7 @@ jobs:
         run: just tests
 
   build:
-    needs: docs
+    needs: check-docs
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

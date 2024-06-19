@@ -1,0 +1,32 @@
+# Copyright 2024 Dotanuki Labs
+# SPDX-License-Identifier: MIT
+
+name: "Docs"
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy-to-ghpages:
+    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Prepare documentation assets
+        uses: dotanuki-labs/github-actions/foss/prepare-ghpages@main
+
+      - name: Deploy assets to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
