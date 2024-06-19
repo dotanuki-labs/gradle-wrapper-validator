@@ -22,8 +22,6 @@ To get started, install additional required tools with `asdf`:
 
 which will install
 [just](https://just.systems)
-and
-[ziglang](https://ziglang.org)
 for your user.
 
 This project uses `just` as a task runner and
