@@ -5,7 +5,6 @@
 [![CI](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml)
 [![Rust](https://img.shields.io/badge/rustc-1.74+-FF8000.svg?logo=rust&logoColor=white)](https://rustup.rs/)
 [![Latest Version](https://img.shields.io/crates/v/gwv)](https://crates.io/crates/gwv)
-[![Downloads](https://img.shields.io/crates/d/gwv.svg)](https://crates.io/crates/gwv)
 [![License](https://img.shields.io/github/license/dotanuki-labs/norris)](https://choosealicense.com/licenses/mit)
 
 > A validator for gradle/wrapper jar binaries for your CI pipelines.
@@ -15,57 +14,14 @@
 This projects is a small and ergonomic re-implementation of
 [gradle/wrapper-validator-action](https://github.com/gradle/wrapper-validation-action),
 intended to be used within any CI pipeline environment. The aforementioned
-project is great, but not quite portable outside Github. If you already use
-it on Github Workflows, there is no need to change!
+project is great, but not quite portable outside Github.
 
 If you are into CircleCI, Bitrise, TeamCity, GitlabCI or others, this project
 may be useful!
 
-## What
-
-This tool will recursively walk the provided `path` and flag any `gradle/gradle-wrapper.jar`
-files with
-[unknown checksums](https://services.gradle.org/versions/all),
-exiting with success otherwise.
-
-## Installing
-
-> [!NOTE]
-> This tool is compatible with `macOS` and `Linux` boxes, running over `x86_64` or `aarch64` hardware
-
-Installing from [crates.io](https://crates.io/crates/gwv) (requires Rust / Cargo):
-
-```bash
-cargo install gwv
-```
-
-Installing with [homebrew](https://brew.sh/) (macOS/Linux)
-
-```bash
-brew tap dotanuki-labs/taps
-brew install gwv
-```
-
-One-off execution (current folder)
-
-```bash
-curl -sSf https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run | bash
-```
-
-## Using
-
-If installed with Cargo or brew
-
-```bash
-gwv --path <path/to/gradle/projects>
-```
-
-One-off execution (custom folder)
-
-```bash
-curl -sSf https://cdn.statically.io/gh/dotanuki-labs/gradle-wrapper-validator/main/run |\
-  bash -s -- <path/to/folder>
-```
+Check our
+[documentation](https://github.com/dotanuki-labs/gradle-wrapper-validator/tree/main/docs)
+to learn more.
 
 ## License
 
