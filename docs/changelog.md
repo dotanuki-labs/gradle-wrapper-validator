@@ -3,18 +3,6 @@
 We follow the [Keep a Changelog](https://keepachangelog.com)
 conventions for release notes. All notable project changes will be documented here.
 
----
-
-## Next version 0.x.y
-
-Released at **YYYY-MM-DD**
-
-### Added
-
-- To do
-
----
-
 ## Version 0.2.0
 
 Released at **2024-04-17**
@@ -26,8 +14,6 @@ Released at **2024-04-17**
 ### Fixed
 
 - Changes URL provided by Gradle with aggregated checksums
-
----
 
 ## Version 0.1.0
 
