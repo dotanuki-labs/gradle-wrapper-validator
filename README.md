@@ -13,14 +13,14 @@
 
 This projects is a small and ergonomic re-implementation of
 [gradle/wrapper-validator-action](https://github.com/gradle/wrapper-validation-action),
-intended to be used within any CI pipeline environment. The aforementioned
+intended to be used within CI pipelines. The aforementioned
 project is great, but not quite portable outside Github.
 
 If you are into CircleCI, Bitrise, TeamCity, GitlabCI or others, this project
 may be useful!
 
 Check our
-[documentation](https://github.com/dotanuki-labs/gradle-wrapper-validator/tree/main/docs)
+[documentation](https://dotanuki-labs.github.io/gradle-wrapper-validator/)
 to learn more.
 
 ## License

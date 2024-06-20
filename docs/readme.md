@@ -1,6 +1,4 @@
-# gradle-wrapper-validator
-
-> A validator for gradle/wrapper jar binaries for your CI pipelines.
+# Gradle Wrapper Validator
 
 ## What
 
