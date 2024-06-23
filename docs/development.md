@@ -14,37 +14,25 @@ Please ensure you have those installed on your system.
 
 ## Project setup
 
-To get started, install additional required tools with `asdf`:
-
-```bash
-./scripts/install-requirements.sh
-```
-
-which will install
-[just](https://just.systems)
-for your user.
-
-This project uses `just` as a task runner and
+This project uses the `krabby.sh` as a task runner and
 defines a few recipes to make things straightforward. You can check them by running:
 
 ```bash
-just
+./krabby.sh
 
-Available recipes:
-    setup    # Setups Rust toolchain and Cargo extensions
-    msrv     # Checks minimum supported Rust toolchain version
-    lint     # Checks code formatting and smells
-    compile  # Quick compiles this project and catches errors
-    tests    # Runs project tests
-    assemble # Builds release binaries for all supported compilation targets
-    security # Runs supply-chain checks and generates SecOps artifacts
+Available tasks:
+    setup       # Setups Rust toolchain and Cargo extensions
+    lint        # Check code formatting and smells
+    tests       # Run tests for Rust modules and integration tests
+    assemble    # Builds binaries according to the environment (local or CI)
+    security    # Run security checks and generates supply-chain artifacts
 ```
 
 We definitely recommend getting started by setting up the latest version of Rust along with
-all required Cargo subcommands by running:
+by running:
 
 ```bash
-just setup
+./krabby.sh setup
 ```
 
 ## Code Style
@@ -84,7 +72,7 @@ and all required status checks must pass.
 
 This project adopts
 [GiHub Actions](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions)
-as it CI system. Most of the verifications we'll run on CI are provided by the `just` recipes,
+as it CI system. Most of the verifications we'll run on CI are provided by `krabby.sh` tasks,
 as previously mentioned.
 
 In addition to that, we also run a specific `Job` to enforce code quality standards for docs,
