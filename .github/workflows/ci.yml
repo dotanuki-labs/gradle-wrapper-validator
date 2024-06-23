@@ -42,14 +42,8 @@ jobs:
       - name: Lint Bash scripts
         uses: dotanuki-labs/github-actions/quality/bash@main
 
-      - name: Setup CI
-        uses: ./.github/actions/setup-rust
-
       - name: Lint project
-        run: just lint
-
-      - name: Check MSRV
-        run: just msrv
+        run: ./krabby.sh lint
 
   tests:
     runs-on: ubuntu-22.04
@@ -59,14 +53,11 @@ jobs:
       - name: Project Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Lint Bash scripts
-        uses: dotanuki-labs/github-actions/quality/bash@main
-
       - name: Setup CI
         uses: ./.github/actions/setup-rust
 
-      - name: Run tests
-        run: just tests
+      - name: Run Rust tests
+        run: ./krabby.sh tests
 
   build:
     needs: check-docs
@@ -83,7 +74,7 @@ jobs:
         uses: ./.github/actions/setup-rust
 
       - name: Cross-compilation against some targets
-        run: just assemble
+        run: ./krabby.sh assemble
 
       - name: Archive binaries
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
@@ -99,11 +90,8 @@ jobs:
       - name: Project Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Setup CI
-        uses: ./.github/actions/setup-rust
-
       - name: Check supply-chain issues
-        run: just security
+        run: ./krabby.sh security
 
       - name: Archive SBOM
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
