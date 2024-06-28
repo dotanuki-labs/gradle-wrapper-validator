@@ -54,7 +54,7 @@ jobs:
           echo "version=$version" >>"$GITHUB_OUTPUT"
 
       - name: Publish draft release on Github
-        uses: softprops/action-gh-release@a74c6b72af54cfa997e81df42d94703d6313a2d0 # v2.0.6
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
         with:
           name: ${{ steps.prepare-release.outputs.version }}
           tag_name: ${{ steps.prepare-release.outputs.version }}
