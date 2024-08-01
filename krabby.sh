@@ -72,6 +72,8 @@ build_binaries() {
 
     local output_dir="target/ci"
 
+    rm -rf "$output_dir" && mkdir -p "$output_dir"
+
     for arch in x86_64 aarch64; do
         local target="$arch-$platform"
         rustup target add "$target"
