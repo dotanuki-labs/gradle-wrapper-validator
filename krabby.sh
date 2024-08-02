@@ -9,16 +9,18 @@ cd "$dir"
 
 readonly callinectes="ghcr.io/dotanuki-labs/callinectes:0c0d4b89aae1631bb4ae5ece77c83426ff1d8073"
 readonly task="$1"
+readonly output_dir="artifacts"
 
 usage() {
     echo
     echo "Available tasks:"
     echo
-    echo "setup      # Installs required Cargo extensions"
-    echo "lint       # Check code formatting and smells"
-    echo "tests      # Run tests for Rust modules and integration tests"
-    echo "assemble   # Builds binaries according to the environment (local or CI)"
-    echo "security   # Run security checks and generates supply-chain artifacts"
+    echo "setup             # Installs required Cargo extensions"
+    echo "lint              # Check code formatting and smells"
+    echo "tests             # Run tests for Rust modules and integration tests"
+    echo "assemble          # Builds binaries according to the environment (local or CI)"
+    echo "security          # Run security checks and generates supply-chain artifacts"
+    echo "prepare-release   # Run security checks and generates supply-chain artifacts"
     echo
 }
 
@@ -70,8 +72,6 @@ build_binaries() {
         ;;
     esac
 
-    local output_dir="target/ci"
-
     rm -rf "$output_dir" && mkdir -p "$output_dir"
 
     for arch in x86_64 aarch64; do
@@ -82,7 +82,6 @@ build_binaries() {
         local binary="target/$target/release/gwv"
         cp "$binary" "$output_dir"/gwv-"$target"
         chmod +x "$output_dir"/gwv-"$target"
-        sha256sum "$binary" >>"$output_dir"/gwv-"$target"-sha256
     done
 }
 
@@ -91,6 +90,22 @@ check_supply_chain() {
     echo "🔥 Checking dependencies and supply-chain"
     echo
     docker run --rm -v "${PWD}:/usr/src" "$callinectes" deps
+}
+
+compute_checksums() {
+    cd "$output_dir"
+    touch checksums.txt
+    find . -name 'rust-cli-tool-scaffold-*' -exec sha256sum {} \; | sed "s/\.\///g" > checksums.txt
+}
+
+export_release_version() {
+    version=$(grep 'version' Cargo.toml | head -1 | sed "s/version[[:space:]]=[[:space:]]//g" | tr -d '"')
+    echo "version=$version" >>"$GITHUB_OUTPUT"
+}
+
+prepare_github_release() {
+    compute_checksums
+    export_release_version
 }
 
 if [[ -z "$task" ]]; then
@@ -113,6 +128,9 @@ case "$task" in
     ;;
 "security")
     check_supply_chain
+    ;;
+"prepare-release")
+    prepare_github_release
     ;;
 *)
     echo "Error: unsupported task → $task"

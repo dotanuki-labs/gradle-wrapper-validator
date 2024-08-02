@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
           name: gwv-binaries-${{ runner.os }}
-          path: target/ci
+          path: artifacts
 
   release:
     needs: build
@@ -49,9 +49,7 @@ jobs:
 
       - name: Prepare to release
         id: prepare-release
-        run: |
-          version=$(grep 'version' Cargo.toml | head -1 | sed "s/version[[:space:]]=[[:space:]]//g" | tr -d '"')
-          echo "version=$version" >>"$GITHUB_OUTPUT"
+        run: ./krabby.sh prepare-release
 
       - name: Publish draft release on Github
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
