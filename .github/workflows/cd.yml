@@ -44,6 +44,9 @@ jobs:
       - name: Setup CI
         uses: ./.github/actions/setup-rust
 
+      - name: Publish on crates.io
+        run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
+
       - name: Check supply-chain issues
         run: ./krabby.sh security
 
@@ -78,6 +81,3 @@ jobs:
           files: |
             artifacts/**/*
             gwv.cdx.json
-
-      - name: Publish on crates.io
-        run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
