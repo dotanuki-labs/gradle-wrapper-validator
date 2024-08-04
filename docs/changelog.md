@@ -3,6 +3,15 @@
 We follow the [Keep a Changelog](https://keepachangelog.com)
 conventions for release notes. All notable project changes will be documented here.
 
+## Version 0.3.0
+
+Released at **2024-08-04**
+
+### Added
+
+- Binary artifacts and SBOMs now have provenance powered by Github Actions
+- Project is now compliant with OpenSSF Best practices
+
 ## Version 0.2.0
 
 Released at **2024-04-17**
