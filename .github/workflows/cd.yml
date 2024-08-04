@@ -60,12 +60,6 @@ jobs:
         with:
           subject-path: artifacts/**/*
 
-      - name: Build provenance for SBOM
-        uses: actions/attest-sbom@f19ab44411e02574a74181cec8eb584319d0f779 # v1.4.0
-        with:
-          subject-path: artifacts/**/*
-          sbom-path: gwv.cdx.json
-
       - name: Prepare Github release
         id: prepare-release
         run: ./krabby.sh prepare-release
