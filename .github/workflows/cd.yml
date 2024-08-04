@@ -5,6 +5,11 @@ name: CD
 
 on: workflow_dispatch
 
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -26,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@89ef406dd8d7e03cfd12d9e0a4a378f454709029 # v4.3.5
         with:
           name: gwv-binaries-${{ runner.os }}
-          path: target/ci
+          path: artifacts
 
   release:
     needs: build
@@ -36,8 +41,8 @@ jobs:
       - name: Project Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Publish on crates.io
-        run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
+      - name: Setup CI
+        uses: ./.github/actions/setup-rust
 
       - name: Check supply-chain issues
         run: ./krabby.sh security
@@ -47,11 +52,20 @@ jobs:
         with:
           path: artifacts
 
-      - name: Prepare to release
+      - name: Build provenance for binaries
+        uses: actions/attest-build-provenance@210c1913531870065f03ce1f9440dd87bc0938cd # v1.4.0
+        with:
+          subject-path: artifacts/**/*
+
+      - name: Build provenance for SBOM
+        uses: actions/attest-sbom@f19ab44411e02574a74181cec8eb584319d0f779 # v1.4.0
+        with:
+          subject-path: artifacts/**/*
+          sbom-path: gwv.cdx.json
+
+      - name: Prepare Github release
         id: prepare-release
-        run: |
-          version=$(grep 'version' Cargo.toml | head -1 | sed "s/version[[:space:]]=[[:space:]]//g" | tr -d '"')
-          echo "version=$version" >>"$GITHUB_OUTPUT"
+        run: ./krabby.sh prepare-release
 
       - name: Publish draft release on Github
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
@@ -64,3 +78,6 @@ jobs:
           files: |
             artifacts/**/*
             gwv.cdx.json
+
+      - name: Publish on crates.io
+        run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
