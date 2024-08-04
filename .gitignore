@@ -1,6 +1,7 @@
 # Rust builds
 /target
 gwv.cdx.json
+artifacts
 
 # IDE environment
 .DS_STORE
