@@ -46,6 +46,7 @@
             "customType": "regex",
             "datasourceTemplate": "git-refs",
             "currentValueTemplate": "main",
+            "depNameTemplate": "dotanuki-labs/callinectes",
             "packageNameTemplate": "https://github.com/dotanuki-labs/callinectes",
             "fileMatch": ["(^|/)krabby\\.sh$"],
             "matchStrings": [
