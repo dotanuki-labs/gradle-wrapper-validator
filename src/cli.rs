@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 use clap::Parser;
-use human_panic::setup_panic;
+use human_panic::{metadata, setup_panic};
 
 pub struct ParsedRawPath(pub String);
 
@@ -15,7 +15,9 @@ impl CommandLineInterface {
     }
 
     pub fn new() -> CommandLineInterface {
-        setup_panic!();
+        let homepage_message = "https://github.io/dotanuki-labs/gradle-wrapper-validator";
+        let support_message = format!("For support, reach out to {}/issues", homepage_message);
+        setup_panic!(metadata!().support(support_message.clone()).homepage(homepage_message));
         CommandLineInterface {}
     }
 }
