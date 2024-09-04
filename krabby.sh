@@ -7,7 +7,7 @@ set -e
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$dir"
 
-readonly callinectes="ghcr.io/dotanuki-labs/callinectes:38f941e442c3395085cad78dad25747445221b02"
+readonly callinectes="ghcr.io/dotanuki-labs/callinectes:85d8d6eed9666fb82ba90c2038dfafd6c3bf70ed"
 readonly task="$1"
 readonly output_dir="artifacts"
 
@@ -20,7 +20,8 @@ usage() {
     echo "tests             # Run tests for Rust modules and integration tests"
     echo "assemble          # Builds binaries according to the environment (local or CI)"
     echo "security          # Run security checks and generates supply-chain artifacts"
-    echo "prepare-release   # Run security checks and generates supply-chain artifacts"
+    echo "sbom              # Generate a CycloneDX SBOM from Rust dependencies"
+    echo "prepare-release   # Prepares metadata for releasing artifacts"
     echo
 }
 
@@ -34,7 +35,7 @@ check_code_smells() {
     echo
     echo "🔥 Checking code smells for Rust code"
     echo
-    docker run --rm -v "${PWD}:/usr/src" "$callinectes" code
+    docker run --rm -v "${PWD}:/usr/src" "$callinectes" fmt clippy
 }
 
 run_cargo_tests() {
@@ -89,7 +90,14 @@ check_supply_chain() {
     echo
     echo "🔥 Checking dependencies and supply-chain"
     echo
-    docker run --rm -v "${PWD}:/usr/src" "$callinectes" deps
+    docker run --rm -v "${PWD}:/usr/src" "$callinectes" msrv deny machete
+}
+
+generate_cyclonedx_sbom() {
+    echo
+    echo "🔥 Generating cyclonedx SBOM"
+    echo
+    docker run --rm -v "${PWD}:/usr/src" "$callinectes" cyclonedx
 }
 
 compute_checksums() {
@@ -133,6 +141,9 @@ case "$task" in
     ;;
 "security")
     check_supply_chain
+    ;;
+"sbom")
+    generate_cyclonedx_sbom
     ;;
 "prepare-release")
     prepare_github_release
