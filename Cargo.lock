@@ -339,7 +339,6 @@ dependencies = [
  "human-panic",
  "predicates",
  "serde",
- "serde_json",
  "sha256",
  "ureq",
  "walkdir",
