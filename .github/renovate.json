@@ -22,6 +22,10 @@
             "matchPackageNames": ["docker.io/dotanuki-labs/callinectes"],
             "replacementName": "ghcr.io/dotanuki-labs/callinectes",
             "matchManagers": ["custom.regex" ]
+        },
+        {
+            "matchManagers": [ "gradle-wrapper"],
+            "enabled": false
         }
     ],
     "customManagers": [
