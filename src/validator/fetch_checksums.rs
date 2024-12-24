@@ -11,12 +11,10 @@ static CHECKSUMS_COLLECTION: &str = "main/sources/src/wrapper-validation/wrapper
 pub fn fetch() -> anyhow::Result<Vec<OfficialWrapperChecksum>> {
     let releases_url = format!("{}/{}/{}", HOST, GITHUB_REPO, CHECKSUMS_COLLECTION);
 
-    let raw_response = ureq::get(&releases_url)
-        .call()
-        .map_err(|_| anyhow!("Failed to fetch Gradle checksums"))?;
+    let raw_response = reqwest::blocking::get(&releases_url).expect("Cannot fetch checksums");
 
     let checksums = raw_response
-        .into_json()
+        .json()
         .map_err(|_| anyhow!("Cannot parse Gradle checksums"))?;
 
     Ok(checksums)

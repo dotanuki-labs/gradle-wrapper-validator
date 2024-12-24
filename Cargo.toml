@@ -18,10 +18,10 @@ msrv = "1.78.0"
 anyhow = "1.0.82"
 clap = { version = "4.5.4", features = ["derive"] }
 human-panic = "2.0.0"
-ureq = { version = "2.9.7", features = ["json"] }
 serde = { version = "1.0.200", features = ["derive"] }
 walkdir = "2.5.0"
 sha256 = "1.5.0"
+reqwest = { version = "0.12.9", default-features = false, features = ["json", "blocking", "rustls-tls"] }
 
 [dev-dependencies]
 assert_cmd = "2.0.14"
