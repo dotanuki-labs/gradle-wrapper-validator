@@ -1,6 +1,6 @@
 [package]
 name = "gwv"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 authors = ["ubiratan.f.soares@gmail.com"]
 description = "A validator for gradle/wrapper jar binaries, intended to be used in CI pipelines"
