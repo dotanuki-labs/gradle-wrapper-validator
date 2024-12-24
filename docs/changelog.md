@@ -3,6 +3,18 @@
 We follow the [Keep a Changelog](https://keepachangelog.com)
 conventions for release notes. All notable project changes will be documented here.
 
+## Version 0.3.1
+
+Released at **2024-12-24**
+
+### Changed
+
+- Changed the underlying HTTP engine used to fetch checksums
+
+### Fixed
+
+- [Security vulnerability related to `idna`](https://rustsec.org/advisories/RUSTSEC-2024-0421.html)
+
 ## Version 0.3.0
 
 Released at **2024-08-04**
