@@ -3,6 +3,14 @@
 We follow the [Keep a Changelog](https://keepachangelog.com)
 conventions for release notes. All notable project changes will be documented here.
 
+## Version 0.3.2
+
+Released at **2024-12-24**
+
+### Fixed
+
+- Fixes CD pipeline
+
 ## Version 0.3.1
 
 Released at **2024-12-24**
