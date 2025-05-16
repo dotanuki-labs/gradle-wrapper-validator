@@ -3,12 +3,32 @@
 
 mod fetch_checksums;
 mod find_wrappers;
-mod models;
-
-use models::{LocalGradleWrapper, OfficialWrapperChecksum};
 
 pub fn locate_and_validate(path_name: &str) -> anyhow::Result<Vec<ValidationOutcome>> {
     validate(path_name, find_wrappers::find, fetch_checksums::fetch)
+}
+
+use serde::Deserialize;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LocalGradleWrapper {
+    pub wrapper_checksum: String,
+    pub file_system_path: String,
+}
+
+impl LocalGradleWrapper {
+    pub fn new(file_system_path: &str, wrapper_checksum: &str) -> Self {
+        Self {
+            wrapper_checksum: String::from(wrapper_checksum),
+            file_system_path: String::from(file_system_path),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct OfficialWrapperChecksum {
+    #[serde(rename(deserialize = "checksum"))]
+    pub value: String,
 }
 
 #[derive(Debug, PartialEq)]
