@@ -8,12 +8,10 @@ confidence-threshold = 0.95
 allow = [
     "Apache-2.0",
     "MIT",
-    "Unicode-DFS-2016",
     "Unicode-3.0",
     "ISC",
     "BSD-3-Clause",
-    "MPL-2.0",
-    "OpenSSL"
+    "CDLA-Permissive-2.0"
 ]
 
 
