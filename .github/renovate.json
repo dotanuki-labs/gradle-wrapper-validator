@@ -6,6 +6,9 @@
         "helpers:pinGitHubActionDigests",
         ":pinDevDependencies"
     ],
+    "lockFileMaintenance": {
+        "enabled": true
+    },
     "osvVulnerabilityAlerts": true,
     "dependencyDashboard": true,
     "labels": ["dependencies"],
