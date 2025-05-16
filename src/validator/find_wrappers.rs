@@ -1,7 +1,7 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
-use crate::validator::models::LocalGradleWrapper;
+use crate::validator::LocalGradleWrapper;
 use anyhow::{anyhow, ensure};
 use std::path::Path;
 use walkdir::{DirEntry, WalkDir};
@@ -33,7 +33,7 @@ fn parse_wrapper_info(entry: DirEntry) -> anyhow::Result<LocalGradleWrapper> {
 #[cfg(test)]
 mod tests {
     use crate::validator::find_wrappers::find;
-    use crate::validator::models::LocalGradleWrapper;
+    use crate::validator::LocalGradleWrapper;
 
     fn project_dir() -> String {
         let root_dir = std::env::current_dir().unwrap();

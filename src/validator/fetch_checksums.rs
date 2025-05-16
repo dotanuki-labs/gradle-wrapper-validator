@@ -1,7 +1,7 @@
 // Copyright 2024 Dotanuki Labs
 // SPDX-License-Identifier: MIT
 
-use crate::validator::models::OfficialWrapperChecksum;
+use crate::validator::OfficialWrapperChecksum;
 use anyhow::anyhow;
 
 static HOST: &str = "https://cdn.statically.io/gh";
