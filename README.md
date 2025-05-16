@@ -2,6 +2,7 @@
 
 [![OSSF Best](https://www.bestpractices.dev/projects/8869/badge)](https://www.bestpractices.dev/projects/8869)
 [![DeepSource](https://app.deepsource.com/gh/dotanuki-labs/gradle-wrapper-validator.svg/?label=active+issues&show_trend=false&token=RkvGszk0c0X5b_NOtG5k501L)](https://app.deepsource.com/gh/dotanuki-labs/gradle-wrapper-validator/)
+[![Dependencies](https://deps.rs/repo/github/dotanuki-labs/gradle-wrapper-validator/status.svg)](https://deps.rs/repo/github/dotanuki-labs/gradle-wrapper-validator)
 [![CI](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml)
 [![Latest Version](https://img.shields.io/crates/v/gwv)](https://crates.io/crates/gwv)
 [![License](https://img.shields.io/github/license/dotanuki-labs/norris)](https://choosealicense.com/licenses/mit)
