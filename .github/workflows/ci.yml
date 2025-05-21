@@ -83,8 +83,11 @@ jobs:
           path: artifacts
 
   build-docker:
-    runs-on: ubuntu-24.04
     needs: check-docs
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ 'ubuntu-24.04', 'ubuntu-24.04-arm' ]
 
     steps:
       - name: Project Checkout
