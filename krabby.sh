@@ -95,7 +95,7 @@ build_docker() {
 
     echo
     echo "🔥 Running Docker image"
-    docker run --rm -v "${PWD}/test-data/valid:/usr/src" "dotanuki-labs/gwv"
+    docker run --rm -v "${PWD}/test-data/valid:/tmp" dotanuki-labs/gwv -p .
     echo
 }
 
