@@ -18,6 +18,7 @@ usage() {
     echo "setup             # Installs required Cargo extensions"
     echo "lint              # Check code formatting and smells"
     echo "tests             # Run tests for Rust modules and integration tests"
+    echo "docker            # Builds and runs Docker image (local or CI)"
     echo "assemble          # Builds binaries according to the environment (local or CI)"
     echo "security          # Run security checks and generates supply-chain artifacts"
     echo "sbom              # Generate a CycloneDX SBOM from Rust dependencies"
@@ -86,6 +87,18 @@ build_binaries() {
     done
 }
 
+build_docker() {
+    echo
+    echo "🔥 Building Docker image"
+    echo
+    docker build -t dotanuki-labs/gwv .
+
+    echo
+    echo "🔥 Running Docker image"
+    docker run --rm -v "${PWD}:/usr/src" "dotanuki-labs/gwv"
+    echo
+}
+
 check_supply_chain() {
     echo
     echo "🔥 Checking dependencies and supply-chain"
@@ -138,6 +151,9 @@ case "$task" in
     ;;
 "assemble")
     build_binaries
+    ;;
+"docker")
+    build_docker
     ;;
 "security")
     check_supply_chain

@@ -59,7 +59,7 @@ jobs:
       - name: Run Rust tests
         run: ./krabby.sh tests
 
-  build:
+  build-rust:
     needs: check-docs
     runs-on: ${{ matrix.os }}
     strategy:
@@ -82,9 +82,20 @@ jobs:
           name: gwv-binaries-${{ runner.os }}
           path: artifacts
 
+  build-docker:
+    runs-on: ubuntu-24.04
+    needs: check-docs
+
+    steps:
+      - name: Project Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Build and run with Docker
+        run: ./krabby.sh docker
+
   security:
     runs-on: ubuntu-24.04
-    needs: [lint, tests, build]
+    needs: [lint, tests, build-rust, build-docker]
 
     steps:
       - name: Project Checkout

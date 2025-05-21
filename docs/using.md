@@ -10,7 +10,7 @@ gwv --path <path/to/gradle/projects>
 
 ## One-off executions
 
-In additiont to existing installation methods, we also provide a standalone, one-off
+In addition to existing installation methods, we also provide a standalone, one-off
 execution script that may be handy for any CI environment.
 
 - One-off execution (current folder)
