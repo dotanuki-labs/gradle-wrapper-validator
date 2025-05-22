@@ -193,7 +193,6 @@ case "$task" in
     generate_cyclonedx_sbom
     ;;
 "prepare-github-release")
-    prepare_docker_build
     prepare_github_release
     ;;
 "prepare-docker-release")
