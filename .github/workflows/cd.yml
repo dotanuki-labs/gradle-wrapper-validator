@@ -88,7 +88,7 @@ jobs:
       - name: Publish on crates.io
         run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
 
-  build-docker-images:
+  push-docker-images:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
@@ -127,12 +127,12 @@ jobs:
           platforms: linux/${{ steps.prepare-release.outputs.platform }}
           labels: ${{ steps.docker-metadata.outputs.labels }}
           annotations: ${{ steps.docker-metadata.outputs.annotations }}
-          outputs: type=registry,push=true, annotation-index.org.opencontainers.image.description="A validator for gradle/wrapper jar binaries for your CI pipelines"
+          outputs: type=registry,push=true
           tags: ghcr.io/${{ github.repository }}:${{ steps.prepare-release.outputs.version }}-${{ steps.prepare-release.outputs.platform }}
 
   publish-multiarch-docker-image:
     runs-on: ubuntu-24.04
-    needs: build-docker-images
+    needs: push-docker-images
 
     steps:
       - name: Project Checkout
