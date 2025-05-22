@@ -34,7 +34,7 @@ jobs:
           name: gwv-binaries-${{ runner.os }}
           path: artifacts
 
-  publish-github-relese:
+  publish-github-release:
     needs: build-binaries
     runs-on: ubuntu-24.04
 
@@ -73,20 +73,6 @@ jobs:
           files: |
             artifacts/**/*
             gwv.cdx.json
-
-  publish-crate:
-    needs: build
-    runs-on: ubuntu-24.04
-
-    steps:
-      - name: Project Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Setup CI
-        uses: ./.github/actions/setup-rust
-
-      - name: Publish on crates.io
-        run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
 
   push-docker-images:
     runs-on: ${{ matrix.runner }}
@@ -151,3 +137,17 @@ jobs:
 
       - name: Update Docker manifest
         run: ./krabby.sh docker-manifest ${{ steps.prepare-release.outputs.version }}
+
+  publish-crate:
+    needs: [ publish-github-release, publish-multiarch-docker-image]
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Project Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup CI
+        uses: ./.github/actions/setup-rust
+
+      - name: Publish on crates.io
+        run: cargo publish --token ${{ secrets.CRATESIO_PUBLISH_TOKEN }}
