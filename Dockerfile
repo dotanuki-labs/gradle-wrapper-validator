@@ -1,12 +1,13 @@
 # Copyright 2025 Dotanuki Labs
 # SPDX-License-Identifier: MIT
 
-FROM rust@sha256:fa7c28576553c431224a85c897c38f3a6443bd831be37061ab3560d9e797dc82 AS builder
+# Adapted from : https://kerkour.com/rust-docker-from-scratch
+FROM rust:alpine3.21 AS builder
 
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache lld mold musl musl-dev libc-dev cmake clang clang-dev openssl file \
-        libressl-dev git make build-base bash curl wget zip gnupg coreutils gcc g++ zstd binutils ca-certificates upx
+        libressl-dev git build-base bash curl zip gnupg coreutils gcc g++ zstd binutils ca-certificates
 
 WORKDIR /src
 COPY . ./
