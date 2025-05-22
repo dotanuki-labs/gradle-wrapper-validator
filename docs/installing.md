@@ -12,6 +12,14 @@ brew tap dotanuki-labs/taps
 brew install gwv
 ```
 
+## Docker
+
+Installing with Docker (macOS/Linux)
+
+```bash
+docker pull ghcr.io/dotanuki-labs/gradle-wrapper-validator
+```
+
 ## Github releases
 
 You can grab a binary directly from
