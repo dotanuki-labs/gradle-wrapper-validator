@@ -7,9 +7,12 @@ set -e
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$dir"
 
-readonly callinectes="ghcr.io/dotanuki-labs/callinectes:latest@sha256:0023ab4eb998d77b518efd38dda7f8fc48c62466cf316acdecbfab8efa7b2cac"
-readonly task="$1"
+readonly callinectes="ghcr.io/dotanuki-labs/callinectes:latest@sha256:fd3bab754068bf1a78ed8d2d01ce91d9277998e263f9d079299ca27f50717b55"
+readonly docker_image="ghcr.io/dotanuki-labs/gwv"
 readonly output_dir="artifacts"
+
+readonly task="$1"
+readonly argument="$2"
 
 usage() {
     echo
@@ -18,11 +21,12 @@ usage() {
     echo "setup             # Installs required Cargo extensions"
     echo "lint              # Check code formatting and smells"
     echo "tests             # Run tests for Rust modules and integration tests"
-    echo "docker            # Builds and runs Docker image (local or CI)"
+    echo "docker-build      # Builds and runs Docker image (local or CI)"
     echo "assemble          # Builds binaries according to the environment (local or CI)"
     echo "security          # Run security checks and generates supply-chain artifacts"
     echo "sbom              # Generate a CycloneDX SBOM from Rust dependencies"
     echo "prepare-release   # Prepares metadata for releasing artifacts"
+    echo "docker-manifest   # Updates Docker manifest for multiarch images"
     echo
 }
 
@@ -129,6 +133,32 @@ export_release_version() {
     echo "version=$version" >>"$GITHUB_OUTPUT"
 }
 
+prepare_docker_build() {
+    case "$RUNNER_ARCH" in
+    *ARM64*)
+        echo "platform=arm64" >>"$GITHUB_OUTPUT"
+        ;;
+    *X64*)
+        echo "platform=amd64" >>"$GITHUB_OUTPUT"
+        ;;
+    *)
+        echo "Error: unsupported runner → $runner"
+        exit 1
+        ;;
+    esac
+}
+
+merge_and_push_docker_manifest() {
+    local package="$docker_image:$argument"
+    local latest="$docker_image:latest"
+
+    docker manifest create "$latest" --amend "$package"-amd64 --amend "$package"-arm64
+    docker manifest annotate --arch amd64 --os linux "$latest" "$package"-amd64
+    docker manifest annotate --arch arm64 --os linux "$latest" "$package"-arm64
+    docker manifest inspect "$latest"
+    docker manifest push "$latest"
+}
+
 prepare_github_release() {
     compute_checksums
     export_release_version
@@ -152,7 +182,7 @@ case "$task" in
 "assemble")
     build_binaries
     ;;
-"docker")
+"docker-build")
     build_docker
     ;;
 "security")
@@ -162,7 +192,11 @@ case "$task" in
     generate_cyclonedx_sbom
     ;;
 "prepare-release")
+    prepare_docker_build
     prepare_github_release
+    ;;
+"docker-manifest")
+    merge_and_push_docker_manifest
     ;;
 *)
     echo "Error: unsupported task → $task"
