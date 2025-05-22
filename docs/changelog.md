@@ -3,6 +3,14 @@
 We follow the [Keep a Changelog](https://keepachangelog.com)
 conventions for release notes. All notable project changes will be documented here.
 
+## Version 0.4.0
+
+Released at **2025-05-22**
+
+### Added
+
+- Provides installation and execution through Docker
+
 ## Version 0.3.2
 
 Released at **2024-12-24**
