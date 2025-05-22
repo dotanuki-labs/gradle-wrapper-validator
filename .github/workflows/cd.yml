@@ -62,7 +62,7 @@ jobs:
 
       - name: Prepare Github release
         id: prepare-release
-        run: ./krabby.sh prepare-release
+        run: ./krabby.sh prepare-github-release
 
       - name: Publish draft release on Github
         uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v2.2.2

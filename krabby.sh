@@ -133,7 +133,8 @@ export_release_version() {
     echo "version=$version" >>"$GITHUB_OUTPUT"
 }
 
-prepare_docker_build() {
+prepare_docker_release() {
+    export_release_version
     case "$RUNNER_ARCH" in
     *ARM64*)
         echo "platform=arm64" >>"$GITHUB_OUTPUT"
@@ -142,7 +143,7 @@ prepare_docker_build() {
         echo "platform=amd64" >>"$GITHUB_OUTPUT"
         ;;
     *)
-        echo "Error: unsupported runner → $runner"
+        echo "Error: unsupported runner → $RUNNER_ARCH"
         exit 1
         ;;
     esac
@@ -191,9 +192,12 @@ case "$task" in
 "sbom")
     generate_cyclonedx_sbom
     ;;
-"prepare-release")
+"prepare-github-release")
     prepare_docker_build
     prepare_github_release
+    ;;
+"prepare-docker-release")
+    prepare_docker_release
     ;;
 "docker-manifest")
     merge_and_push_docker_manifest
