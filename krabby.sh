@@ -69,7 +69,7 @@ build_binaries() {
         platform="apple-darwin"
         ;;
     "Linux")
-        platform="unknown-linux-gnu"
+        platform="unknown-linux-musl"
         ;;
     *)
         echo "Error: unsupported environment → $gha_runner"
