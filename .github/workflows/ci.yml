@@ -99,7 +99,10 @@ jobs:
           pattern: gwv-binaries-*
 
       - name: Test binary
-        run: ./gwv-binaries-ubuntu-24.04/gwv-x86_64-unknown-linux-musl --help
+        run: |
+          ls -la artifacts/gwv-binaries-Linux
+          chmod +x ./artifacts/gwv-binaries-Linux/gwv-x86_64-unknown-linux-musl
+          ./artifacts/gwv-binaries-Linux/gwv-x86_64-unknown-linux-musl --help
 
   build-docker:
     needs: check-docs
