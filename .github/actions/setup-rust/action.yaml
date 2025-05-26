@@ -23,7 +23,7 @@ runs:
         - name: Install additional tools (Linux-only)
           if: runner.os == 'Linux'
           shell: bash
-          run: sudo apt-get install -qy binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu g++-aarch64-linux-gnu musl-tools
+          run: sudo apt-get install -qy binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu g++-aarch64-linux-gnu musl musl-tools clang
 
         - name: Setup Rust and Cargo plugins
           shell: bash
