@@ -42,6 +42,9 @@ jobs:
       - name: Lint Bash scripts
         uses: dotanuki-labs/github-actions/quality/bash@main
 
+      - name: Setup CI
+        uses: ./.github/actions/setup-rust
+
       - name: Lint project
         run: ./krabby.sh lint
 

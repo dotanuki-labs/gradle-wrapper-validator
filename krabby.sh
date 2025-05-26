@@ -59,6 +59,7 @@ build_binaries() {
     local platform
 
     echo "Detected environment → $gha_runner"
+    rm -rf "$output_dir" && mkdir -p "$output_dir"
 
     case "$gha_runner" in
     "local")
@@ -67,9 +68,25 @@ build_binaries() {
         ;;
     "macOS")
         platform="apple-darwin"
+        for arch in x86_64 aarch64; do
+            local target="$arch-$platform"
+            rustup target add "$target"
+            cargo build --release --target "$target"
+
+            local binary="target/$target/release/gwv"
+            cp "$binary" "$output_dir"/gwv-"$target"
+            chmod +x "$output_dir"/gwv-"$target"
+        done
         ;;
     "Linux")
         platform="unknown-linux-musl"
+        local target="x86_64-unknown-linux-musl"
+        rustup target add "$target"
+        cargo build --release --target "$target"
+
+        local binary="target/$target/release/gwv"
+        cp "$binary" "$output_dir"/gwv-"$target"
+        chmod +x "$output_dir"/gwv-"$target"
         ;;
     *)
         echo "Error: unsupported environment → $gha_runner"
@@ -77,18 +94,6 @@ build_binaries() {
         exit 1
         ;;
     esac
-
-    rm -rf "$output_dir" && mkdir -p "$output_dir"
-
-    for arch in x86_64 aarch64; do
-        local target="$arch-$platform"
-        rustup target add "$target"
-        cargo build --release --target "$target"
-
-        local binary="target/$target/release/gwv"
-        cp "$binary" "$output_dir"/gwv-"$target"
-        chmod +x "$output_dir"/gwv-"$target"
-    done
 }
 
 build_docker() {
