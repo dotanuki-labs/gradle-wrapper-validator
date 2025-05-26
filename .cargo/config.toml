@@ -1,7 +1,3 @@
-[env]
-CC = "clang"
-CXX = "clang++"
-
 [target.'cfg(all())']
 rustflags = [
     # Extended checks for clippy

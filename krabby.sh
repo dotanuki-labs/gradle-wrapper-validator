@@ -82,7 +82,7 @@ build_binaries() {
         platform="unknown-linux-musl"
         local target="x86_64-unknown-linux-musl"
         rustup target add "$target"
-        cargo build --release --target "$target"
+        CC=clang cargo build --release --target "$target"
 
         local binary="target/$target/release/gwv"
         cp "$binary" "$output_dir"/gwv-"$target"
