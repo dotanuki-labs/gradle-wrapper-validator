@@ -16,7 +16,7 @@ impl CommandLineInterface {
 
     pub fn new() -> CommandLineInterface {
         let homepage_message = "https://github.io/dotanuki-labs/gradle-wrapper-validator";
-        let support_message = format!("For support, reach out to {}/issues", homepage_message);
+        let support_message = format!("For support, reach out to {homepage_message}/issues");
         setup_panic!(metadata!().support(support_message.clone()).homepage(homepage_message));
         CommandLineInterface {}
     }
