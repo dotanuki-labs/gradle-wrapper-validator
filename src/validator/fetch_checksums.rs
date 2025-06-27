@@ -9,7 +9,7 @@ static GITHUB_REPO: &str = "gradle/actions";
 static CHECKSUMS_COLLECTION: &str = "main/sources/src/wrapper-validation/wrapper-checksums.json";
 
 pub fn fetch() -> anyhow::Result<Vec<OfficialWrapperChecksum>> {
-    let releases_url = format!("{}/{}/{}", HOST, GITHUB_REPO, CHECKSUMS_COLLECTION);
+    let releases_url = format!("{HOST}/{GITHUB_REPO}/{CHECKSUMS_COLLECTION}");
 
     let raw_response = reqwest::blocking::get(&releases_url).expect("Cannot fetch checksums");
 
