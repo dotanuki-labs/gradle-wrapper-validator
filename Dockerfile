@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 # Adapted from : https://kerkour.com/rust-docker-from-scratch
-FROM rust:alpine3.21@sha256:b7a47e914d8c624ddb824dff64de033ff24eff7c6140b3f1408b70981aa5a751 AS builder
+FROM rust:alpine3.21@sha256:0c004cf201a139a3ce08f10cb200402e59499352a21bc01e1b1a1351fcd45c8a AS builder
 
 RUN apk update && \
     apk upgrade --no-cache && \
