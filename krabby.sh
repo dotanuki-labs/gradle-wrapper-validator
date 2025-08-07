@@ -7,7 +7,7 @@ set -e
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$dir"
 
-readonly callinectes="ghcr.io/dotanuki-labs/callinectes:latest@sha256:0f9ad393370aec2fd9d5b7a77ff29d843712134bbdfc165d61b1a28dc8c5d001"
+readonly callinectes="ghcr.io/dotanuki-labs/callinectes:latest@sha256:7b46b94becba8358274a4487ec9623c4423802b646049d5c5c413f57063eff9a"
 readonly docker_image="ghcr.io/dotanuki-labs/gradle-wrapper-validator"
 readonly output_dir="artifacts"
 
