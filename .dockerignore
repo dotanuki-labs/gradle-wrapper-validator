@@ -1,1 +1,14 @@
 /target
+.cargo
+test-data
+.editorconfig
+.github
+.gitattributes
+.markdownlint.yaml
+.mergify.yml
+.deepsource.toml
+deny.toml
+LICENSE
+README.md
+run
+krabby.sh

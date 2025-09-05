@@ -38,7 +38,7 @@ find_os_sulfix() {
         echo "apple-darwin"
 
     elif [ "$os" == "Linux" ]; then
-        echo "unknown-linux-gnu"
+        echo "unknown-linux-musl"
     else
         echo "Unsupported OS -> $os"
         exit 1

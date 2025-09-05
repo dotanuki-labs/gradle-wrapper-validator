@@ -32,8 +32,8 @@ fn parse_wrapper_info(entry: DirEntry) -> anyhow::Result<LocalGradleWrapper> {
 
 #[cfg(test)]
 mod tests {
-    use crate::validator::find_wrappers::find;
     use crate::validator::LocalGradleWrapper;
+    use crate::validator::find_wrappers::find;
 
     fn project_dir() -> String {
         let root_dir = std::env::current_dir().unwrap();

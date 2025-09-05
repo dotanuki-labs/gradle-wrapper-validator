@@ -1,7 +1,7 @@
 [package]
 name = "gwv"
 version = "0.4.0"
-edition = "2021"
+edition = "2024"
 authors = ["ubiratan.f.soares@gmail.com"]
 description = "A validator for gradle/wrapper jar binaries, intended to be used in CI pipelines"
 repository = "https://github.com/dotanuki-labs/gradle-wrapper-validator"
@@ -12,7 +12,7 @@ categories = ["command-line-utilities"]
 keywords = ["supply-chain", "android", "gradle", "ci", "devops"]
 
 [package.metadata]
-msrv = "1.82.0"
+msrv = "1.89.0"
 
 [dependencies]
 anyhow = "=1.0.99"
