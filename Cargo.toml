@@ -15,7 +15,7 @@ keywords = ["supply-chain", "android", "gradle", "ci", "devops"]
 msrv = "1.82.0"
 
 [dependencies]
-anyhow = "=1.0.82"
+anyhow = "=1.0.99"
 clap = { version = "=4.5.4", features = ["derive"] }
 human-panic = "=2.0.0"
 serde = { version = "=1.0.200", features = ["derive"] }
