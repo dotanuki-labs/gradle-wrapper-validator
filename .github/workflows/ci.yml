@@ -99,9 +99,37 @@ jobs:
       - name: Build and run with Docker
         run: ./krabby.sh docker-build
 
+  compatibility-tests:
+    needs: build-rust
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, macos-13 ]
+
+    steps:
+      - name: Project Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Fetch executable from previous build
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          path: artifacts
+
+      - name: Compatibility check (macOS)
+        if: ${{ runner.os == 'macOS'}}
+        run: |
+          chmod +x ./artifacts/gwv-binaries-macOS/gwv-x86_64-apple-darwin
+          ./artifacts/gwv-binaries-macOS/gwv-x86_64-apple-darwin --help
+
+      - name: Compatibility check (Linux)
+        if: ${{ runner.os == 'Linux'}}
+        run: |
+          chmod +x ./artifacts/gwv-binaries-Linux/gwv-x86_64-unknown-linux-musl
+          ./artifacts/gwv-binaries-Linux/gwv-x86_64-unknown-linux-musl --help
+
   security:
     runs-on: ubuntu-24.04
-    needs: [lint, tests, build-rust, build-docker]
+    needs: [lint, tests, build-rust, build-docker, compatibility-tests]
 
     steps:
       - name: Project Checkout
