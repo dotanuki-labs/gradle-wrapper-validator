@@ -3,6 +3,18 @@
 We follow the [Keep a Changelog](https://keepachangelog.com)
 conventions for release notes. All notable project changes will be documented here.
 
+## Version 0.5.0
+
+Released at **2025-09-12**
+
+### Added
+
+- Ensure self-contained Linux binaries on top of `musl` target
+
+### Changed
+
+- Linux binaries on top of gnu libc are no longer available as Github releases
+
 ## Version 0.4.0
 
 Released at **2025-05-22**
