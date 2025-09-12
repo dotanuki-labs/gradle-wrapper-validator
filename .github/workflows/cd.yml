@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ 'ubuntu-24.04', 'macos-15' ]
+        os: ["ubuntu-24.04", "macos-15"]
 
     steps:
       - name: Project Checkout
@@ -109,6 +109,7 @@ jobs:
         id: build
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
+          context: .
           push: true
           provenance: false
           platforms: linux/${{ steps.prepare-release.outputs.platform }}
@@ -140,7 +141,7 @@ jobs:
         run: ./krabby.sh docker-manifest ${{ steps.prepare-release.outputs.version }}
 
   publish-crate:
-    needs: [ publish-github-release, publish-multiarch-docker-image]
+    needs: [publish-github-release, publish-multiarch-docker-image]
     runs-on: ubuntu-24.04
 
     steps:
