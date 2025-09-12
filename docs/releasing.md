@@ -29,7 +29,7 @@ git checkout -b ufs/release-x.y.z
 - Review the release draft and add any final touches (for instance, updating `RenovateBot` identity name)
 - Publish the release 🚀
 
-## Updating distributions
+## Updating distributions (GitHub admins-only)
 
 - Clone [dotanuki-labs/homebrew-taps](https://github.com/dotanuki-labs/homebrew-taps)
 - Create a branch like `ufs/gwv-x.y.z`
