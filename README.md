@@ -5,7 +5,7 @@
 [![Dependencies](https://deps.rs/repo/github/dotanuki-labs/gradle-wrapper-validator/status.svg)](https://deps.rs/repo/github/dotanuki-labs/gradle-wrapper-validator)
 [![CI](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dotanuki-labs/gradle-wrapper-validator/actions/workflows/ci.yml)
 [![Latest Version](https://img.shields.io/crates/v/gwv)](https://crates.io/crates/gwv)
-[![License](https://img.shields.io/github/license/dotanuki-labs/norris)](https://choosealicense.com/licenses/mit)
+[![License](https://img.shields.io/github/license/dotanuki-labs/gradle-wrapper-validator)](https://choosealicense.com/licenses/mit)
 
 > A validator for gradle/wrapper jar binaries for your CI pipelines.
 
