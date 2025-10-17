@@ -4,11 +4,13 @@
 mod fetch_checksums;
 mod find_wrappers;
 
+use serde::Deserialize;
+
 pub fn locate_and_validate(path_name: &str) -> anyhow::Result<Vec<ValidationOutcome>> {
     validate(path_name, find_wrappers::find, fetch_checksums::fetch)
 }
 
-use serde::Deserialize;
+type ChecksumCheck<'check> = (LocalGradleWrapper, Option<&'check OfficialWrapperChecksum>);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct LocalGradleWrapper {
@@ -22,6 +24,13 @@ impl LocalGradleWrapper {
             wrapper_checksum: String::from(wrapper_checksum),
             file_system_path: String::from(file_system_path),
         }
+    }
+
+    fn match_checksum(self, checksums: &'_ [OfficialWrapperChecksum]) -> ChecksumCheck<'_> {
+        let maybe_validated = checksums
+            .iter()
+            .find(|wrapped| wrapped.value.eq(&self.wrapper_checksum));
+        (self, maybe_validated)
     }
 }
 
@@ -37,6 +46,16 @@ pub struct ValidationOutcome {
     pub has_valid_wrapper_checksum: bool,
 }
 
+impl From<ChecksumCheck<'_>> for ValidationOutcome {
+    fn from(checksum_check: ChecksumCheck<'_>) -> Self {
+        let (local_project, validation) = checksum_check;
+        ValidationOutcome {
+            local_project,
+            has_valid_wrapper_checksum: validation.is_some(),
+        }
+    }
+}
+
 fn validate(
     base_path: &str,
     locate_gradle_projects: fn(&str) -> anyhow::Result<Vec<LocalGradleWrapper>>,
@@ -45,18 +64,11 @@ fn validate(
     let available_checksums = fetch_gradle_releases()?;
     let local_projects = locate_gradle_projects(base_path)?;
 
-    let mut validations: Vec<ValidationOutcome> = Vec::new();
-
-    for project in local_projects {
-        let validation = available_checksums
-            .iter()
-            .find(|wrapped| wrapped.value.eq(&project.wrapper_checksum));
-
-        validations.push(ValidationOutcome {
-            local_project: project,
-            has_valid_wrapper_checksum: validation.is_some(),
-        })
-    }
+    let validations = local_projects
+        .into_iter()
+        .map(|local_project| local_project.match_checksum(&available_checksums))
+        .map(ValidationOutcome::from)
+        .collect::<Vec<_>>();
 
     Ok(validations)
 }
