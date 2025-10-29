@@ -19,7 +19,7 @@ msrv = "1.89.0"
 
 [dependencies]
 anyhow = "=1.0.100"
-clap = { version = "=4.5.50", features = ["derive"] }
+clap = { version = "=4.5.51", features = ["derive"] }
 human-panic = "=2.0.4"
 serde = { version = "=1.0.228", features = ["derive"] }
 walkdir = "=2.5.0"
