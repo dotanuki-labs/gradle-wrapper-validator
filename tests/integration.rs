@@ -5,7 +5,7 @@ use assert_cmd::Command;
 use predicates::str::contains;
 
 fn gwv() -> Command {
-    Command::cargo_bin("gwv").unwrap()
+    assert_cmd::cargo::cargo_bin_cmd!("gwv")
 }
 
 fn project_dir() -> String {
