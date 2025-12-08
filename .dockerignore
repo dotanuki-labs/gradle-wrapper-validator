@@ -4,7 +4,7 @@ test-data
 .editorconfig
 .github
 .gitattributes
-.markdownlint.yaml
+.rumdl.toml
 .mergify.yml
 .deepsource.toml
 deny.toml
