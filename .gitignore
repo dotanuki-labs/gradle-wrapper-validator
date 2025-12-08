@@ -6,4 +6,4 @@ artifacts
 # IDE environment
 .DS_STORE
 .idea
-
+.rumdl_cache
