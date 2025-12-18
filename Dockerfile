@@ -14,7 +14,7 @@ COPY . ./
 RUN cargo build --release
 
 
-FROM alpine@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314c5dc7375 AS extras
+FROM alpine@sha256:be171b562d67532ea8b3c9d1fc0904288818bb36fc8359f954a7b7f1f9130fb2 AS extras
 
 RUN apk update && \
     apk upgrade --no-cache && \
