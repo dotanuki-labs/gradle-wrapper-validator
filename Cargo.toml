@@ -24,7 +24,7 @@ human-panic = "=2.0.4"
 serde = { version = "=1.0.228", features = ["derive"] }
 walkdir = "=2.5.0"
 sha256 = "=1.6.0"
-reqwest = { version = "=0.12.26", default-features = false, features = ["json", "blocking", "rustls-tls"] }
+reqwest = { version = "=0.12.27", default-features = false, features = ["json", "blocking", "rustls-tls"] }
 
 [dev-dependencies]
 assert_cmd = "=2.1.1"
