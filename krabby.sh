@@ -67,20 +67,37 @@ build_binaries() {
         ;;
     "macOS")
         platform="apple-darwin"
+
+        rm -rf "$output_dir" && mkdir -p "$output_dir"
+
+        for arch in x86_64 aarch64; do
+            local target="$arch-$platform"
+            rustup target add "$target"
+            cargo build --release --target "$target"
+
+            local binary="target/$target/release/gwv"
+            cp "$binary" "$output_dir"/gwv-"$target"
+            chmod +x "$output_dir"/gwv-"$target"
+        done
+
         ;;
     "Linux")
         platform="unknown-linux-musl"
-        ;;
-    *)
-        echo "Error: unsupported environment → $gha_runner"
-        echo
-        exit 1
-        ;;
-    esac
 
-    rm -rf "$output_dir" && mkdir -p "$output_dir"
+        case "$RUNNER_ARCH" in
+        *ARM64*)
+            local arch="aarch64"
+            ;;
+        *X64*)
+            local arch="x86_64"
+            ;;
+        *)
+            echo "Error: unsupported runner → $RUNNER_ARCH"
+            exit 1
+            ;;
+        esac
 
-    for arch in x86_64 aarch64; do
+        rm -rf "$output_dir" && mkdir -p "$output_dir"
         local target="$arch-$platform"
         rustup target add "$target"
         cargo build --release --target "$target"
@@ -88,7 +105,13 @@ build_binaries() {
         local binary="target/$target/release/gwv"
         cp "$binary" "$output_dir"/gwv-"$target"
         chmod +x "$output_dir"/gwv-"$target"
-    done
+        ;;
+    *)
+        echo "Error: unsupported environment → $gha_runner"
+        echo
+        exit 1
+        ;;
+    esac
 }
 
 build_docker() {
