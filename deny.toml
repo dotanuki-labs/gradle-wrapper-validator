@@ -18,7 +18,8 @@ allow = [
     "Unicode-3.0",
     "ISC",
     "BSD-3-Clause",
-    "CDLA-Permissive-2.0"
+    "CDLA-Permissive-2.0",
+    "OpenSSL"
 ]
 
 

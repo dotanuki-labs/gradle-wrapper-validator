@@ -64,7 +64,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ["ubuntu-24.04", "macos-15"]
+        os: ["ubuntu-24.04", "ubuntu-24.04-arm", "macos-15"]
 
     steps:
       - name: Project Checkout
@@ -79,7 +79,7 @@ jobs:
       - name: Archive binaries
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: gwv-binaries-${{ runner.os }}
+          name: gwv-binaries-${{ runner.os }}-${{ runner.arch }}
           path: artifacts
 
   build-docker:
@@ -120,14 +120,14 @@ jobs:
       - name: Compatibility check (macOS)
         if: ${{ runner.os == 'macOS'}}
         run: |
-          chmod +x ./artifacts/gwv-binaries-macOS/gwv-x86_64-apple-darwin
-          ./artifacts/gwv-binaries-macOS/gwv-x86_64-apple-darwin --help
+          chmod +x ./artifacts/gwv-binaries-macOS-ARM64/gwv-x86_64-apple-darwin
+          ./artifacts/gwv-binaries-macOS-ARM64/gwv-x86_64-apple-darwin --help
 
       - name: Compatibility check (Linux)
         if: ${{ runner.os == 'Linux'}}
         run: |
-          chmod +x ./artifacts/gwv-binaries-Linux/gwv-x86_64-unknown-linux-musl
-          ./artifacts/gwv-binaries-Linux/gwv-x86_64-unknown-linux-musl --help
+          chmod +x ./artifacts/gwv-binaries-Linux-X64/gwv-x86_64-unknown-linux-musl
+          ./artifacts/gwv-binaries-Linux-X64/gwv-x86_64-unknown-linux-musl --help
 
   security:
     runs-on: ubuntu-24.04
