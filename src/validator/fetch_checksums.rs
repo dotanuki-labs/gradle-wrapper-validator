@@ -9,7 +9,7 @@ use reqwest_retry::RetryTransientMiddleware;
 use reqwest_retry::policies::ExponentialBackoff;
 use std::time::Duration;
 
-static HOST: &str = "https://cdn.statically.io/gh";
+static HOST: &str = "https://cdn.jsdelivr.net/gh";
 static GITHUB_REPO: &str = "gradle/actions";
 static CHECKSUMS_COLLECTION: &str = "main/sources/src/wrapper-validation/wrapper-checksums.json";
 
