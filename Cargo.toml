@@ -30,7 +30,7 @@ reqwest-retry = "=0.9.1"
 tokio = { version = "=1.50.0", features = ["full"] }
 
 [dev-dependencies]
-assert_cmd = "=2.1.2"
+assert_cmd = "=2.2.0"
 predicates = "=3.1.4"
 
 [[bin]]
