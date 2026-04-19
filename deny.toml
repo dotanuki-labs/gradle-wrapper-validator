@@ -2,7 +2,10 @@
 # SPDX-License-Identifier: MIT
 
 [advisories]
-ignore = []
+ignore = [
+    "RUSTSEC-2026-0098",
+    "RUSTSEC-2026-0099",
+]
 
 [licenses]
 confidence-threshold = 0.95
@@ -13,14 +16,13 @@ allow = [
     "ISC",
     "BSD-3-Clause",
     "CDLA-Permissive-2.0",
-    "OpenSSL"
 ]
 
 
 # From https://embarkstudios.github.io/cargo-deny/checks/licenses/cfg.html
 [[licenses.clarify]]
 name = "ring"
-expression = "MIT AND ISC AND OpenSSL"
+expression = "MIT AND ISC"
 license-files = [
     { path = "LICENSE", hash = 0xbd0eed23 }
 ]
